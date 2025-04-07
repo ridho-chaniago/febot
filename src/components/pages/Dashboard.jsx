@@ -52,6 +52,8 @@ const Dashboard = () => {
     if (error) {
         return <p className="text-center text-red-500">{error}</p>;
     }
+    const sortedBalances = updatedBalances.sort((a, b) => (b.balance * b.buy) - (a.balance * a.buy));
+
 
     return (
         <div className="min-h-screen bg-blue-100 ">
@@ -73,7 +75,7 @@ const Dashboard = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-gray-100">
-                            {updatedBalances.map((allBalance) => (
+                            {sortedBalances.map((allBalance) => (
                                 <Table pair={allBalance.pair} avg={allBalance.avg} sell={allBalance.sell} buy={allBalance.buy} balance={allBalance.balance} idr={idr} i={i++}/>
                             ))}
                         </tbody>
