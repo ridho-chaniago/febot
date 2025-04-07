@@ -11,7 +11,7 @@ const Dashboard = () => {
     useEffect(() => {
         async function fetchData(item) {
             try {
-                const dataReady = await axios.get('https://bot.serveo.net/data-ready');
+                const dataReady = await axios.get('https:/bot.serveo.net/data-ready');
                 setUpdatedBalances(dataReady.data); // Menyimpan updatedBalances ke state updatedBalances
                 setLoading(false);
                 console.log(dataReady.data);
@@ -24,10 +24,10 @@ const Dashboard = () => {
         }
         
         fetchData();
-        // const intervalId = setInterval(fetchData, 5000); // 5000ms = 5 detik
+        const intervalId = setInterval(fetchData, 20000); // 5000ms = 5 detik
 
         // Clean up interval saat komponen unmount
-        // return () => clearInterval(intervalId);
+        return () => clearInterval(intervalId);
     }, []);
     const idrBalance = updatedBalances.find((pair) => pair.pair === "idr");
     const idr= idrBalance ? idrBalance.balance : 0;
@@ -93,8 +93,8 @@ const Dashboard = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-gray-100">
-                            {sortedBalances.map((allBalance) => (
-                                <Table  negatif={totalNegativePercent} pair={allBalance.pair} avg={allBalance.avg} sell={allBalance.sell} buy={allBalance.buy} balance={allBalance.balance} idr={idr} i={i++}/>
+                            {sortedBalances.map((allBalance,index) => (
+                                <Table  negatif={totalNegativePercent} pair={allBalance.pair} avg={allBalance.avg} sell={allBalance.sell} buy={allBalance.buy} balance={allBalance.balance} idr={idr} i={index+1}/>
                             ))}
                         </tbody>
                     </table>
