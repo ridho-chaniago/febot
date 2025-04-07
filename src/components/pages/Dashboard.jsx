@@ -53,13 +53,31 @@ const Dashboard = () => {
         return <p className="text-center text-red-500">{error}</p>;
     }
     const sortedBalances = updatedBalances.sort((a, b) => (b.balance * b.buy) - (a.balance * a.buy));
+    const totalNegativePercent = updatedBalances.reduce((sum, item) => {
+        // Pastikan avg dan sell adalah angka
+        const avg = parseFloat(item.avg);  // Mengkonversi avg menjadi angka
+        const sell = parseFloat(item.sell);  // Mengkonversi sell menjadi angka
+    
+        // Menghitung persen perubahan
+        const persen = Math.floor(((avg - sell) / avg) * 100);
+    
+        // Cek jika persen negatif, kemudian floor dan tambahkan ke total
+        if (persen > 0) {
+            sum += Math.floor(persen); // Math.floor untuk membulatkan persen negatif
+        }
+    
+        return sum;
+    }, 0);
+    
+    console.log(`Total Negative Percent: ${totalNegativePercent} X 11000 = ${totalNegativePercent*11000}`); // Menampilkan jumlah total persen negatif
+    
 
 
     return (
         <div className="min-h-screen bg-blue-100 ">
             <Portfolio total={total}/>
             <div className="container mx-auto flex flex-col justify-center items-center">
-                <h1 className="text-3xl px-10 font-semibold text-center mb-6 text-gray-800">Bid/Ask Data for Top Coins</h1>
+                <h1 className="text-3xl px-10 font-semibold text-center mb-6 text-gray-800">You need Deposite {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalNegativePercent*11000)}</h1>
                     <table className="min-w-full bg-white table-auto border border-black rounded">
                         <thead className='sticky top-16 w-full '>
                             <tr className="bg-blue-200">
@@ -76,7 +94,7 @@ const Dashboard = () => {
                         </thead>
                         <tbody className="bg-gray-100">
                             {sortedBalances.map((allBalance) => (
-                                <Table pair={allBalance.pair} avg={allBalance.avg} sell={allBalance.sell} buy={allBalance.buy} balance={allBalance.balance} idr={idr} i={i++}/>
+                                <Table  negatif={totalNegativePercent} pair={allBalance.pair} avg={allBalance.avg} sell={allBalance.sell} buy={allBalance.buy} balance={allBalance.balance} idr={idr} i={i++}/>
                             ))}
                         </tbody>
                     </table>
