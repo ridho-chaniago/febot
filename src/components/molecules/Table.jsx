@@ -60,6 +60,7 @@ function Table({ pair, avg, buy, sell, balance, i, idr }) {
         colorTextKetBuy = 'text-red-600'
         bgColorBuy = "bg-red-600"
     }
+    
     return (
         <tr key={pair} className="border-b hover:bg-gray-100">
             <td className={`px-6 py-2 bg-gray-200 `}>{i++}</td>
