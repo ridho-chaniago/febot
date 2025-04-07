@@ -2,7 +2,7 @@
   "name": "bot-app",
   "private": true,
   "version": "0.0.0",
-  "homepage":"https://github.com/ridho-chaniago/bebot",
+  "homepage":"https://github.com/ridho-chaniago/febot",
   "type": "module",
   "scripts": {
     "dev": "vite",
