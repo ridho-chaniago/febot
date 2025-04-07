@@ -11,7 +11,7 @@ const Dashboard = () => {
     useEffect(() => {
         async function fetchData(item) {
             try {
-                const dataReady = await axios.get('https:/bot.serveo.net/data-ready');
+                const dataReady = await axios.get('https://bot.serveo.net/data-ready');
                 setUpdatedBalances(dataReady.data); // Menyimpan updatedBalances ke state updatedBalances
                 setLoading(false);
                 console.log(dataReady.data);

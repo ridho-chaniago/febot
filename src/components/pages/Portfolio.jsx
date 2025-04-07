@@ -21,7 +21,7 @@ const Portfolio = ({ total }) => {
     const fetchAssets = async () => {
         try {
             const response = await axios.get(
-                'https:/bot.serveo.net/saldo'
+                'https://bot.serveo.net/saldo'
             );
             setWd(response.data.withdraw.idr);
             const dataDepo = response.data.deposit.idr
