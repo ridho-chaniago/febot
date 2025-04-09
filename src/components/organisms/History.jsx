@@ -9,7 +9,7 @@ const History = () => {
     // Fungsi untuk mendapatkan riwayat transaksi
     const fetchHistory = async () => {
         try {
-            const response = await axios.get('http://192.168.11.201:3000/history');
+            const response = await axios.get('https://bot.serveo.net/history');
             setHistory(response.data.reverse());
 
             console.log(history)
