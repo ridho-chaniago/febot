@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-const Portfolio = ({ total }) => {
+import History from '../organisms/history';
+const Portfolio = ({ total, idr }) => {
     const [depo, setDepo] = useState([]);
     const [wd, setWd] = useState([]);
     const [portfolioValue, setPortfolioValue] = useState(0);
-    const [profitLoss, setProfitLoss] = useState(0);
 
-    // Contoh data portfolio
-    const portfolio = [
-        { name: 'Bitcoin', symbol: 'BTC', amount: 0.5 },
-        { name: 'Ethereum', symbol: 'ETH', amount: 2 },
-        { name: 'Binance Coin', symbol: 'BNB', amount: 10 },
-    ];
-    // const updatedBalances=Dashboard.updatedBalances
     useEffect(() => {
         fetchAssets();
     }, []);
@@ -21,7 +14,7 @@ const Portfolio = ({ total }) => {
     const fetchAssets = async () => {
         try {
             const response = await axios.get(
-                'https://bot.serveo.net/saldo'
+                'http://192.168.11.201:3000/saldo'
             );
             setWd(response.data.withdraw.idr);
             const dataDepo = response.data.deposit.idr
@@ -32,25 +25,16 @@ const Portfolio = ({ total }) => {
             console.error('Error fetching data:', error);
         }
     };
-    // Menghitung total nilai portfolio dan profit/loss
-    // const calculatePortfolioValue = (data) => {
-    //     let totalValue = 0;
-    //     let totalInitialValue = 0;
+    
+    const persen = ((((total+idr) - depo).toFixed(2)) / total * 100).toFixed(2)
+    const [isVisible, setIsVisible] = useState(false); // Menyimpan apakah History ditampilkan atau tidak
 
-    //     portfolio.forEach((asset) => {
-    //         const currentPrice = data[asset.symbol.toLowerCase()]?.usd || 0;
-    //         totalValue += currentPrice * asset.amount;
-    //         totalInitialValue += 1000 * asset.amount; // Misalkan pembelian awal 1000 USD untuk setiap aset
-    //     });
-
-    //     setPortfolioValue(totalValue);
-    //     setProfitLoss(totalValue - totalInitialValue);
-    // };
-    const persen = (((total - depo).toFixed(2)) / total * 100).toFixed(2)
-    // setProfitLoss(persen)
-    // console.log(profitLoss)
+    // Fungsi untuk toggle visibility (menyembunyikan atau menampilkan History)
+    const toggleVisibility = () => {
+        setIsVisible(!isVisible); // Membalikkan nilai dari isVisible
+    };
     return (
-        <div className="container mx-auto p-6">
+        <div id='top' className="container mx-auto p-6">
             <header className="text-center mb-8">
                 <h1 className="text-4xl font-bold text-gray-800">Crypto Portfolio</h1>
             </header>
@@ -64,47 +48,35 @@ const Portfolio = ({ total }) => {
                         <span className="text-green-600">Rp. {portfolioValue.toFixed(2)}</span>
                     </h2>
                 </div>
-                <h2 className="text-2xl text-center font-semibold text-gray-700">Estimated Asset Value :<br/>
-                    <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {(total).toFixed(2)}</span>
+                <h2 className="text-2xl text-center font-semibold text-gray-700">Estimated Asset Value :<br />
+                    <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {Math.round(total+idr)}</span>
                 </h2>
                 <div>
                     <button type="button" onClick={fetchAssets} className="flex items-center space-x-2">
                         <h2 className="text-2xl text-gray-500">Profit/Loss:<br />
                             <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>
                                 {persen}%
-                            </span><br/>
-                    <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {(total - depo).toFixed(2)}</span>
+                            </span><br />
+                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {((total+idr) - depo).toFixed(2)}</span>
                         </h2>
-                       
+
 
                     </button>
 
                 </div>
             </div>
+            <div className='flex justify-center flex-col'>
+                {/* Tombol untuk toggle visibility */}
+                <button
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mb-4"
+                    onClick={toggleVisibility}
+                >
+                    {isVisible ? 'Sembunyikan Riwayat' : 'Tampilkan Riwayat'}
+                </button>
 
-            {/* <div className="asset-list mb-6">
-                <h2 className="text-2xl font-semibold text-gray-700 mb-4">History Trade</h2>
-                <table className="min-w-full table-auto bg-white shadow-lg rounded-lg">
-                    <thead>
-                        <tr className="border-b">
-                            <th className="px-4 py-2 text-left text-gray-600">Name</th>
-                            <th className="px-4 py-2 text-left text-gray-600">Amount</th>
-                            <th className="px-4 py-2 text-left text-gray-600">Current Price (USD)</th>
-                            <th className="px-4 py-2 text-left text-gray-600">Total Value (USD)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {portfolio.map((asset) => (
-                            <tr key={asset.symbol} className="border-b">
-                                <td className="px-4 py-2">{asset.name}</td>
-                                <td className="px-4 py-2">{asset.amount}</td>
-                                <td className="px-4 py-2">{assets[asset.symbol.toLowerCase()]?.usd || 'Loading...'}</td>
-                                <td className="px-4 py-2">{(assets[asset.symbol.toLowerCase()]?.usd || 0) * asset.amount}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div> */}
+                {/* Kondisional rendering untuk menampilkan History */}
+                {isVisible && <History />}
+            </div>
         </div>
     );
 };
