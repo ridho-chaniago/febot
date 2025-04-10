@@ -16,7 +16,8 @@ const Portfolio = ({ total, idr }) => {
             const response = await axios.get(
                 'https://bot.serveo.net/saldo'
             );
-            setWd(response.data.withdraw.idr);
+            console.log(response.data.withdraw.idr[0].rp);
+            setWd((response.data.withdraw.idr[0]).rp);
             const dataDepo = response.data.deposit.idr
             setDepo(dataDepo.reduce((sum, item) => sum + parseInt(item.amount), 0))
             // calculatePortfolioValue(response);
@@ -26,7 +27,7 @@ const Portfolio = ({ total, idr }) => {
         }
     };
     
-    const persen = ((((total+idr) - depo).toFixed(2)) / total * 100).toFixed(2)
+    const persen = ((((total+idr) - (depo-wd)).toFixed(2)) / total * 100).toFixed(2)
     const [isVisible, setIsVisible] = useState(false); // Menyimpan apakah History ditampilkan atau tidak
 
     // Fungsi untuk toggle visibility (menyembunyikan atau menampilkan History)
@@ -41,11 +42,14 @@ const Portfolio = ({ total, idr }) => {
 
             <div className="portfolio-summary mb-6 flex justify-between px-14">
                 <div>
-                    <h2 className="text-2xl text-gray-500">Deposite :
+                    <h2 className="text-2xl text-gray-500">Saldo:
+                        <span className="text-green-600">Rp. {depo-wd}</span>
+                    </h2>
+                    <h2 className="text-lg text-gray-500">Deposite :
                         <span className="text-green-600">Rp. {depo}</span>
                     </h2>
-                    <h2 className="text-2xl text-gray-500">Withdraw:
-                        <span className="text-green-600">Rp. {portfolioValue.toFixed(2)}</span>
+                    <h2 className="text-lg text-gray-500">Withdraw:
+                        <span className="text-green-600">Rp. {wd}</span>
                     </h2>
                 </div>
                 <h2 className="text-2xl text-center font-semibold text-gray-700">Estimated Asset Value :<br />
@@ -57,7 +61,7 @@ const Portfolio = ({ total, idr }) => {
                             <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>
                                 {persen}%
                             </span><br />
-                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {((total+idr) - depo).toFixed(2)}</span>
+                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {((total+idr) - (depo-wd)).toFixed(2)}</span>
                         </h2>
 
 
