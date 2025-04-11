@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Table from '../molecules/table';
+import Table from '../atom/Table';
 import Portfolio from './Portfolio';
+import TableDashboard from '../molecules/TableDashboard';
 
 const Dashboard = () => {
     const [updatedBalances, setUpdatedBalances] = useState([]); // Tambahkan state untuk menyimpan updatedBalances
@@ -82,8 +83,9 @@ const Dashboard = () => {
             </a>
 
 
-            <Portfolio total={total} idr={idr}/>
-            <div className="container mx-auto flex flex-col justify-center items-center">
+            <Portfolio total={total} idr={idr} sortedBalances={sortedBalances} totalNegativePercent={totalNegativePercent} />
+
+            {/* <div className="container mx-auto flex flex-col justify-center items-center">
                 <h1 id='top' className="text-3xl px-10 font-semibold text-center mb-6 text-gray-800">You need Deposite {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalNegativePercent * 11000)}</h1>
                 <table className="min-w-full bg-white table-auto border border-black rounded">
                     <thead className='sticky top-16 w-full '>
@@ -105,7 +107,7 @@ const Dashboard = () => {
                         ))}
                     </tbody>
                 </table>
-            </div>
+            </div> */}
         </div>
         // </div>
     );

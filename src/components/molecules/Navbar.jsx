@@ -19,9 +19,10 @@ const Navbar = () => {
         {/* Links */}
         <div className={`lg:flex space-x-6 ${isMenuOpen ? 'block' : 'hidden'} lg:block`}>
           <ul className="flex space-x-6 text-white">
-            <li><Link to="/" className="hover:text-cyan-400">Home</Link></li>
-            <li><Link to="/portfolio" className="hover:text-cyan-400">Portfolio</Link></li>
-            <li><Link to="/history" className="hover:text-cyan-400">Orders</Link></li>
+            <li><button className='bg-white px-4 py-2 rounded-lg hover:bg-gray-300'>
+              <a href="https://ridhochaniago.web.app" target='_blank' className='font-bold  text-blue-600 '>A little bit about me</a>
+              </button>
+              </li>
           </ul>
         </div>
 

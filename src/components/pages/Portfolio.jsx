@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import History from '../organisms/history';
-const Portfolio = ({ total, idr }) => {
+import TableDashboard from '../molecules/TableDashboard';
+const Portfolio = ({ total, idr ,sortedBalances, totalNegativePercent}) => {
     const [depo, setDepo] = useState([]);
     const [wd, setWd] = useState([]);
     const [portfolioValue, setPortfolioValue] = useState(0);
@@ -73,15 +74,21 @@ const Portfolio = ({ total, idr }) => {
             </div>
             <div className='flex justify-center flex-col'>
                 {/* Tombol untuk toggle visibility */}
+
+                <p
+                    className="text-blue-600 font-bold px-4 py-2 rounded mb-4 text-center text-5xl"
+                >
+                    {isVisible ? 'History Trade' : 'Dashboard Page'}
+                </p>
                 <button
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mb-4"
                     onClick={toggleVisibility}
                 >
-                    {isVisible ? 'Sembunyikan Riwayat' : 'Tampilkan Riwayat'}
+                    {isVisible ?  'DashBoard Pages':'History Trade' }
                 </button>
 
                 {/* Kondisional rendering untuk menampilkan History */}
-                {isVisible && <History />}
+                {isVisible ? <History /> : <TableDashboard sortedBalances={sortedBalances} totalNegativePercent={totalNegativePercent} idr={idr}/>}
             </div>
         </div>
     );
