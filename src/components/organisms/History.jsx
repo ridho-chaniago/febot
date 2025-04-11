@@ -10,9 +10,22 @@ const History = () => {
     const fetchHistory = async () => {
         try {
             const response = await axios.get('https://bot.serveo.net/history');
-            setHistory(response.data.reverse());
+            const dataNow = response.data.reverse();
+            console.log(dataNow)
+            const today = new Date().toISOString().split("T")[0]; // contoh: '2025-04-11'
+            const todayData = dataNow.filter(item => {
+                const rawDate = item.date.split(',')[0]; // "11/4/2025"
+                const [day, month, year] = rawDate.split('/');
+            
+                // Bikin format jadi "2025-04-11"
+                const formatted = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+            
+                return formatted === today;
+            });
+            // const todayData = dataNow.filter(item => item.date === today);
+            setHistory(todayData)
 
-            console.log(history)
+
 
 
         } catch (error) {
@@ -21,13 +34,17 @@ const History = () => {
     };
 
     // Fungsi untuk melakukan sorting data
+
+
+
+
     const sortData = (key) => {
         let direction = 'ascending';
 
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-
+        
         const sortedData = [...history].sort((a, b) => {
             if (key === 'date') {
                 const dateA = new Date(a[key]);
@@ -86,7 +103,7 @@ const History = () => {
                 </thead>
                 <tbody className="bg-gray-100">
                     {history.map((item, index) => (
-                        <tr key={index} className="border-b hover:bg-gray-100">
+                        <tr key={index} className=" hover:bg-gray-100 border-b-black">
                             <td className={`px-6 py-2 bg-gray-200`}>{index + 1}</td>
                             <td className={`px-6 py-2`}>{item.pair}</td>
                             <td className={`px-6 py-2`}>{item.type}</td>
