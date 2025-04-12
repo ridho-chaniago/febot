@@ -17,19 +17,18 @@ const Portfolio = ({ total, idr ,sortedBalances, totalNegativePercent}) => {
             const response = await axios.get(
                 'https://bot.serveo.net/saldo'
             );
-            console.log(response.data.withdraw.idr[0].rp);
             setWd((response.data.withdraw.idr[0]).rp);
-            console.log("ini wd" ,wd)
             const dataDepo = response.data.deposit.idr
             setDepo(dataDepo.reduce((sum, item) => sum + parseInt(item.amount), 0))
             // calculatePortfolioValue(response);
-            console.log(depo);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
-    
-    const persen = ((((total+idr) - (depo-(Number(wd)+wdManual))).toFixed(2)) / total * 100).toFixed(2)
+
+    const totalDepo=Number((depo-((Number(wd))+wdManual)).toFixed(0))
+    const estimasiValue=(Number(total.toFixed(0)) + idr)
+    const persen = ((estimasiValue-totalDepo) / totalDepo * 100).toFixed(2)
     const [isVisible, setIsVisible] = useState(false); // Menyimpan apakah History ditampilkan atau tidak
 
     // Fungsi untuk toggle visibility (menyembunyikan atau menampilkan History)
@@ -45,18 +44,18 @@ const Portfolio = ({ total, idr ,sortedBalances, totalNegativePercent}) => {
             <div className="portfolio-summary mb-6 flex justify-between px-14">
                 <div>
                     <h2 className="text-2xl text-gray-500">Saldo:
-                        <span className="text-green-600">Rp. {depo-(Number(wd)+wdManual)}</span>
+                        <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span>
                     </h2>
                     <h2 className="text-lg text-gray-500">Deposite :
-                        <span className="text-green-600">Rp. {depo}</span>
+                        <span className="text-green-600">Rp. {depo.toLocaleString('id-ID')}</span>
                     </h2>
                     <h2 className="text-lg text-gray-500">Withdraw:
-                    <span className="text-green-600">Rp. {Number(wd) +wdManual}</span>
+                    <span className="text-green-600">Rp. {(Number(wd) +wdManual).toLocaleString('id-ID')}</span>
 
                     </h2>
                 </div>
                 <h2 className="text-2xl text-center font-semibold text-gray-700">Estimated Asset Value :<br />
-                    <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {Math.round(total+idr)}</span>
+                    <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {(Math.round(total+idr).toLocaleString('id-ID'))}</span>
                 </h2>
                 <div>
                     <button type="button" onClick={fetchAssets} className="flex items-center space-x-2">
@@ -64,7 +63,8 @@ const Portfolio = ({ total, idr ,sortedBalances, totalNegativePercent}) => {
                             <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>
                                 {persen}%
                             </span><br />
-                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {((total+idr) - (depo-(Number(wd)+wdManual)).toFixed(2))}</span>
+                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {(estimasiValue-totalDepo).toLocaleString('id-ID')}
+</span>
                         </h2>
 
 

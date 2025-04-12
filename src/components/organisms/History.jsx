@@ -6,13 +6,12 @@ import TableHistory from '../molecules/TableHistory';
 const History = () => {
     const [history, setHistory] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString('en-CA'));
-    
+
     // Fungsi untuk mendapatkan riwayat transaksi
     const fetchHistory = async () => {
         try {
             const response = await axios.get('https://bot.serveo.net/history');
             const dataNow = response.data.reverse();
-            console.log(dataNow)
             const today = selectedDate; // hasil: '2025-04-12'
             const todayData = dataNow.filter(item => {
                 const rawDate = item.date.split(',')[0]; // "11/4/2025"
@@ -33,6 +32,20 @@ const History = () => {
             console.error('Error fetching history:', error);
         }
     };
+    history.sort((a, b) => {
+        const parseDate = (str) => {
+            const [datePart, timePart] = str.split(', ');
+            const [day, month, year] = datePart.split('/').map(Number);
+            const [hour, minute] = timePart.split('.').map(Number);
+            return new Date(year, month - 1, day, hour, minute);
+        };
+
+        const dateA = parseDate(a.date);
+        const dateB = parseDate(b.date);
+        return dateB - dateA; // descending order (terbaru dulu)
+    });
+
+    console.table(history);
 
     // Fungsi untuk melakukan sorting data
 
@@ -60,19 +73,22 @@ const History = () => {
 
             <div>
                 {/* Kolom BUY */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <h2 className="text-xl font-bold text-green-600 mb-2">BUY {buyData.length}</h2>
+                        <h2 className="text-xl font-bold text-green-600 mb-2">
+                            BUY {buyData.length}
+                        </h2>
                         <TableHistory history={buyData} />
                     </div>
 
-                    {/* Kolom SELL */}
                     <div>
-                        <h2 className="text-xl font-bold text-red-600 mb-2">SELL {sellData.length}</h2>
+                        <h2 className="text-xl font-bold text-red-600 mb-2">
+                            SELL {sellData.length}
+                        </h2>
                         <TableHistory history={sellData} />
                     </div>
-
                 </div>
+
             </div>
 
 
