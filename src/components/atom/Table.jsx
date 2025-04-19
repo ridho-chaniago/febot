@@ -62,6 +62,7 @@ function Table({ pair, avg, buy, sell, balance, i, idr }) {
     }
     
     return (
+        
         <tr key={pair} className="border-b-black mb-5 hover:bg-gray-100">
             <td className={`px-6 py-2 bg-gray-200 `}>{i++}</td>
             <td className={`px-6 py-2 `}>{pair}</td>
@@ -79,6 +80,7 @@ function Table({ pair, avg, buy, sell, balance, i, idr }) {
             <td className={`px-6 py-2 bg-green-100`}>{buy}</td>
             <td className={`px-6 py-2 bg-red-100`}>{sell}</td>
         </tr>
+        
     )
 }
 
