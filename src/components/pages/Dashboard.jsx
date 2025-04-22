@@ -12,11 +12,15 @@ const Dashboard = () => {
 
     async function fetchData(item) {
             try {
-                const dataReady = await axios.get('https://bot.serveo.net/api/balance');
+                const dataReady = await axios.get('http://192.168.11.201:3000/api/balance');
+                // const dataReady = await axios.get('http://localhost:3000/api/balance');
+                // const dataReady = await axios.get('https://bot.serveo.net/api/balance');
                 setUpdatedBalances(dataReady.data.data.ticker); // Menyimpan updatedBalances ke state updatedBalances
                 setIdr(dataReady.data.data.idr); // Menyimpan updatedBalances ke state updatedBalances
                 setLoading(false);
-                const dataHistory= await axios.get('https://bot.serveo.net/api/history');
+                const dataHistory= await axios.get('http://192.168.11.201:3000/api/history');
+                // const dataHistory= await axios.get('http://localhost:3000/api/history');
+                // const dataHistory= await axios.get('https://bot.serveo.net/api/history');
                 setHistory(dataHistory.data);
 
             } catch (error) {
@@ -25,11 +29,10 @@ const Dashboard = () => {
                 setLoading(false);
             }
         }
-        
     useEffect(() => {
         
         fetchData();
-        const intervalId = setInterval(fetchData, 20000);
+        const intervalId = setInterval(fetchData, 10000);
         return () => clearInterval(intervalId);
     }, []);
     if (loading) {

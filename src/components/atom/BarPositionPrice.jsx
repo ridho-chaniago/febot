@@ -5,49 +5,50 @@ function BarPositionPrice({ history, pair, last }) {
     const minPrice = history.find(item => item.id === base && item.statusBuy == 'pending');
     const min = minPrice ? minPrice.buyPrice : 0;
     const maxPrice = history.filter(item => item.pair === pair && item.statusSell !== 'done');
-    const max = maxPrice.map(item => Number(item.sellPrice));
-    const maxSellPrice =Math.max(...max)
-    const filteredBars = history
-        .filter(item => item.id == base && Number(item.sellPrice))
-        .map(item => {
-            let color = '';
-            if (item.status == 'filled') color = 'bg-green-500';
-            if (item.statusSell !== 'done') color = 'bg-red-500';
-            return { ...item, color };
-        })
-        .sort((a, b) => a.price - b.price);
+    const max = maxPrice.map(item => Number(item.sellPrice)).sort((a, b) => a - b);
+    const maxSellPrice = Math.max(...max)
+
     return (
         <tr className=''>
-            <td colSpan={9} className='space-y-2 '>
-                <div className="relative flex h-4 w-full bg-black rounded-full mt-1 mb-3 ">
+            <td colSpan={9} className='space-x-2 '>
+                <div className="flex h-6 w-full bg-gray-400 rounded-lg p  mb-3 ">
+
 
                     <div
-                        className="absolute top-0 h-4 w-4 bg-green-500 rounded-full -translate-x-1/2"
-                        style={{ left: `${((min - min) / (maxSellPrice - min)) * 100}%` }}
-                        title={`Buy: ${min}`}
-                    ></div>
-                    <div
-                        className="absolute top-0 h-4 w-4 bg-blue-500 rounded-full -translate-x-1/2"
-                        style={{ left: `${((Number(last) - min) / (maxSellPrice - min)) * 100}%` }}
-                        title={`Buy: ${last} ${maxSellPrice}`}
-                    ></div>
+                        className="relative group text-white h-6 w-12 bg-green-500 rounded-lg flex flex-col items-center justify-center" >
+                        <div className="w-1 -full"></div>
+                        <p className="text-xs ">{
+                            `${(min !== maxSellPrice ? ((min - last) / (last)) * 100 : 0).toFixed(2)}%`
+                        }</p>
+                        <div className="absolute bottom-full bg-green-500 text-white text-sm px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition duration-300">
+                            {/* Rp.{"123456.2345423".toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} */}
+                            {/* Rp.{min.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} */}
+                            Rp.{(Number(min) || 0).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+
+
+                        </div>
+                    </div>
+
+                    <div className="relative group  hover:bg-blue-700  cursor-pointer text-white h-6 w-12 bg-blue-500 rounded-lg flex flex-col justify-center items-center" >
+
+                        <p className="text-xs ">{`0%`
+                        }</p>
+                        <div className="absolute bottom-full bg-blue-600 text-white text-sm px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition duration-300">
+                            Rp.{(Number(last) || 0).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+                        </div>
+                    </div>
                     {max.map((item, index) => (
                         <div
                             key={index}
-                            className="absolute top-0 h-4 w-4 bg-red-500 rounded-full -translate-x-1/2"
-                            style={{
-                                left: min !== maxSellPrice ? `${((item - min) / (maxSellPrice - min)) * 100}%` : '0%',
-                                display: item > 0 ? 'block' : 'none',
-                            }}
-                            title={`Now: ${item}`}
-                        ></div>
+                            className="relative group text-white h-6 w-12 bg-red-500 hover:bg-red-700  cursor-pointer rounded-lg flex flex-co justify-center items-center" >
+                            <p className=" text-xs ">{
+                                `${(min !== maxSellPrice ? ((item - last) / (last)) * 100 : 0).toFixed(2)}%`
+                            }</p>
+                            <div className="absolute bottom-full bg-red-600 text-white text-sm px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition duration-300">
+                                Rp.{(Number(item) || 0).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+                            </div>
+                        </div>
                     ))}
-
-                    {/* <div
-                        className="absolute top-0 h-4 w-4 bg-red-500 rounded-full -translate-x-1/2"
-                        style={{ left: `${((maxSellPrice - min) / (maxSellPrice - min)) * 100}%` }}
-                        title={`Now: ${maxSellPrice}`}
-                    ></div> */}
                 </div>
 
             </td>

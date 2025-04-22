@@ -10,7 +10,9 @@ const History = ({history, dataBal, idr}) => {
     // Fungsi untuk mendapatkan riwayat transaksi
     const fetchHistory = async () => {
         try {
-            const response = await axios.get('https://bot.serveo.net/api/history');
+            const response = await axios.get('http://192.168.11.201:3000/api/history');
+            // const response = await axios.get('http://localhost:3000/api/history');
+            // const response = await axios.get('https://bot.serveo.net/api/history');
             const dataNow = response.data.reverse();
             const today = selectedDate;
             const todayData = dataNow.filter(item => {
