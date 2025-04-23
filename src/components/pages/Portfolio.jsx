@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { all } from 'axios';
 import History from '../organisms/History';
 import TableDashboard from '../molecules/TableDashboard';
 const Portfolio = ({ idr, updatedBalances, history }) => {
     const [dataBal, setDataBal] = useState([]);
     const [inOrderSell, setInOrderSell] = useState(0)
     const [inOrderBuy, setInOrderBuy] = useState(0)
-    const wdManual = 803102
+    const wdCoin = 803102
+    const wdManual = 512597
+    const totalWd = wdCoin + wdManual
+    const totalDepo = 50000 + 100133 + 120375 + 2500828 + 200186 + 1000113 + 1000467
+    const sisaIdr = totalDepo - totalWd
+    const asetCoinInIdr = updatedBalances.reduce((sum, item) => sum + (Number(item.balance) * Number(item.last)), 0);
+
     useEffect(() => {
         setInOrderSell(frozenSell)
     }, [updatedBalances]);
-
+    console.log("render")
+    const totalSell = history.filter(item => item.statusSell === "done").length;
+    const allCoinProfitIdr = history
+        .filter(item => item.statusSell === "done")
+        .reduce((sum, item) => sum + (Number(item.amountSell) * Number(item.sellPrice)) - (Number(item.buyAmount) * Number(item.buyPrice)), 0);
 
     const dataDataWithCalc = updatedBalances.map(item => {
         const base = item.pair.split('_')[0];
-        const coin = history.filter(h => h.id === base && h.statusBuy !== 'filled' && !h.statusSell);
+        const coin = history.filter(h => h.id === base && h.statusBuy == "pending" && !h.statusSell);
         const coinBalance = history.filter(h => h.id === base && h.statusSell !== 'done' && h.statusBuy === 'filled');
+        // console.log(coin)
         const balanceSell = coinBalance.reduce((sum, h) => sum + Number(h.buyAmount), 0);
         const balanceBuy = coin.reduce((sum, h) => sum + Number(h.buyAmount), 0);
 
@@ -38,14 +49,14 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
             sellCompleteLength,
             profitIdr,
             coinAvg,
-            balanceBuy
+            balanceBuy,
         };
     });
     // const updatedBalances=updatedBalances
     // setDataBal(updatedBalances);
-
     const frozenSell = dataDataWithCalc ? dataDataWithCalc.reduce((sum, item) => sum + item.balanceSell * item.last, 0)
         : 0;
+
     const frozenBuy = dataDataWithCalc
         ? dataDataWithCalc.reduce((sum, item) => {
             const balance = Number(item.balanceBuy);
@@ -57,6 +68,15 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
             return sum + balance * price;
         }, 0)
         : 0;
+
+    const estimasiValue =
+    console.log(frozenBuy, "frozenBuy")
+    console.log(frozenSell, "frozenSell")
+    console.log(asetCoinInIdr, "asetCoinInIdr")
+    const persen=((estimasiValue-sisaIdr)/-sisaIdr)*100
+    console.log(persen, "persen")
+    console.log(estimasiValue, "estimasiValue")
+    console.log(sisaIdr, "sisaIdr")
     // const frozenBuy = Array.isArray(updatedBalances)? updatedBalances.reduce((sum, item) =>sum + item.balance * item.last
     // , 0):0;
     const [isVisible, setIsVisible] = useState(false); // Menyimpan apakah History ditampilkan atau tidak
@@ -73,7 +93,7 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
 
             <div className="portfolio-summary mb-6 flex justify-between px-14">
                 <div className=' w-[270px]'>
-                    
+
                     <h2 className="text-xl text-gray-500">In Idr :
                         <span className="text-green-600"> Rp. {idr.toLocaleString('id-ID')}</span>
                         {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
@@ -86,21 +106,42 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
 
                     </h2>
                 </div>
-                <h2 className="  w-[270px] text-2xl text-center font-semibold text-gray-700">Estimated Asset Value :<br />
+                <div className='flex flex-col'>
+                    <h2 className="  w-[270px] text-2xl text-center font-semibold text-gray-700">Estimated Asset Value :<br />
 
-                    <span className="text-green-600"> Rp. {Number((Number(idr) + Number(frozenBuy) + Number(frozenSell)).toFixed(2)).toLocaleString('id-ID')}</span>
-                    {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
+                        <span className="text-green-600"> Rp. {Number((Number(idr) + Number(frozenBuy) + Number(estimasiValue)).toFixed(2)).toLocaleString('id-ID')}</span>
+                        {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
 
-                </h2>
+                    </h2>
+                    <button type="button" className="flex flex-col items-center space-x-2">
+                        <h2 className="text-2xl text-gray-500">Profit/Loss:<br />
+                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>
+                                {persen}%
+                            </span><br />
+                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {(estimasiValue - sisaIdr).toLocaleString('id-ID')}
+                            </span>
+                        </h2>
+                        {/* <p>Total Sell {totalSell}</p> */}
+                        <h2 className="text-xl text-gray-500">Total Sell :
+                            <span className="text-green-600"> {totalSell}</span>
+                        </h2>
+                        <h2 className="text-xl text-gray-500">Total Profit :
+                            <span className="text-green-600"> Rp. {Number(allCoinProfitIdr.toFixed(0)).toLocaleString('id-ID')}</span>
+                        </h2>
+                    </button>
+                </div>
 
                 <div className=' w-[270px]'>
-                    <button type="button" className="flex items-center space-x-2">
-                        <h2 className="text-2xl text-gray-500">Profit/Loss:<br />
-                            {/* <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>
-                            {persen}% */}
-                            {/* </span><br /> */}
-                            {/* <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {(estimasiValue - totalDepo).toLocaleString('id-ID')}
-                        </span> */}
+                    <button type="button" className="flex flex-col items-center space-x-2">
+
+                        <h2 className="text-xl text-gray-500">Balance :
+                            <span className="text-green-600"> Rp. {(sisaIdr).toLocaleString('id-ID')}</span>
+                        </h2>
+                        <h2 className="text-xl text-gray-500">Deposite :
+                            <span className="text-green-600"> Rp. {(totalDepo).toLocaleString('id-ID')}</span>
+                        </h2>
+                        <h2 className="text-xl text-gray-500">withdrawal :
+                            <span className="text-green-600"> Rp. {Number(totalWd).toLocaleString('id-ID')}</span>
                         </h2>
                     </button>
                 </div>
