@@ -7,8 +7,8 @@ function TableDashboard({ dataBal, history, idr ,dataWithCalc}) {
     const sortedData = dataWithCalc.sort((a, b) => b.totalIdr - a.totalIdr);
     const profitOneDay=history.filter(item => item.statusSell === "done" && new Date(item.timeSell).toISOString().split("T")[0]===new Date().toISOString().split("T")[0]).reduce((sum, item) => sum + (Number(item.amountSell) * Number(item.sellPrice)) - (Number(item.buyAmount) * Number(item.buyPrice)), 0);
     const sellOneDay=history.filter(item => item.statusSell === "done" && new Date(item.timeSell).toISOString().split("T")[0]===new Date().toISOString().split("T")[0]).length
-    console.log(sellOneDay)
-    console.log(profitOneDay)
+    // console.log(sellOneDay)
+    // console.log(profitOneDay)
     return (
         <div className="p-2 flex flex-col justify-center items-center">
 

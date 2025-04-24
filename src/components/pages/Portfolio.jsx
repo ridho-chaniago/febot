@@ -6,12 +6,12 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
     const [dataBal, setDataBal] = useState([]);
     const [inOrderSell, setInOrderSell] = useState(0)
     const [inOrderBuy, setInOrderBuy] = useState(0)
-    const wdCoin = 803102
-    const wdManual = 512597
-    const totalWd = wdCoin + wdManual
-    const totalDepo = 50000 + 100133 + 120375 + 2500828 + 200186 + 1000113 + 1000467
+    const totalWd = 0
+    const totalDepo = 3000171
     const sisaIdr = totalDepo - totalWd
-    const asetCoinInIdr = updatedBalances.reduce((sum, item) => sum + (Number(item.balance) * Number(item.last)), 0);
+    const asetCoinInIdr = Number(idr)
+    const [tampilkanSaldo, setTampilkanSaldo] = useState(false);
+
 
     useEffect(() => {
         setInOrderSell(frozenSell)
@@ -30,7 +30,7 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
         const balanceSell = coinBalance.reduce((sum, h) => sum + Number(h.buyAmount), 0);
         const balanceBuy = coin.reduce((sum, h) => sum + Number(h.buyAmount), 0);
 
-        const totalIdr = coinBalance.reduce((sum, h) => sum + Number(h.buyAmount) * Number(item.last), 0);
+        const totalIdr = coinBalance.reduce((sum, h) => sum + Number(h.amountSell) * Number(item.last), 0);
         const coinAvg = history.filter(h => h.id === base && h.statusBuy == 'filled' && h.statusSell == 'pending');
 
         const avgBuy = coinAvg.length > 0 ? coinAvg.reduce((sum, h) => sum + Number(h.buyPrice), 0) / coinAvg.length : 0;
@@ -69,21 +69,17 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
         }, 0)
         : 0;
 
-    const estimasiValue =
-    console.log(frozenBuy, "frozenBuy")
-    console.log(frozenSell, "frozenSell")
-    console.log(asetCoinInIdr, "asetCoinInIdr")
-    const persen=((estimasiValue-sisaIdr)/-sisaIdr)*100
-    console.log(persen, "persen")
-    console.log(estimasiValue, "estimasiValue")
-    console.log(sisaIdr, "sisaIdr")
-    // const frozenBuy = Array.isArray(updatedBalances)? updatedBalances.reduce((sum, item) =>sum + item.balance * item.last
-    // , 0):0;
+    const estimasiValue = (asetCoinInIdr + frozenSell + frozenBuy+allCoinProfitIdr)
+    console.log(estimasiValue, asetCoinInIdr, frozenBuy, frozenSell)
+    const persen = (((estimasiValue - totalDepo) / totalDepo) * 100).toFixed(2)
     const [isVisible, setIsVisible] = useState(false); // Menyimpan apakah History ditampilkan atau tidak
-
-    // Fungsi untuk toggle visibility (menyembunyikan atau menampilkan History)
+    console.log(estimasiValue, sisaIdr)
+    console.log("asetCoinIndr", asetCoinInIdr)
+    console.log("frozeSell", inOrderSell)
+    console.log("frozenBuy", frozenBuy)
     const toggleVisibility = () => {
         setIsVisible(!isVisible); // Membalikkan nilai dari isVisible
+
     };
     return (
         <div id='top' className="container mx-auto p-6">
@@ -95,7 +91,7 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
                 <div className=' w-[270px]'>
 
                     <h2 className="text-xl text-gray-500">In Idr :
-                        <span className="text-green-600"> Rp. {idr.toLocaleString('id-ID')}</span>
+                        <span className="text-green-600"> Rp. {tampilkanSaldo ? idr.toLocaleString('id-ID') : "********"}</span>
                         {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
                     </h2>
                     <h2 className="text-xl text-gray-500">In Order Sell :
@@ -107,18 +103,28 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
                     </h2>
                 </div>
                 <div className='flex flex-col'>
+
+
                     <h2 className="  w-[270px] text-2xl text-center font-semibold text-gray-700">Estimated Asset Value :<br />
+                        <div className='flex items-center'>
+                            <button
+                                onClick={() => setTampilkanSaldo(!tampilkanSaldo)}
+                                className="bg-gray-200 text-black mr-2 px-3 py-1 border hover:bg-gray-300 rounded shadow-md hover:shadow-lg active:translate-y-[1px] active:shadow-sm transition-all"
 
-                        <span className="text-green-600"> Rp. {Number((Number(idr) + Number(frozenBuy) + Number(estimasiValue)).toFixed(2)).toLocaleString('id-ID')}</span>
-                        {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
-
+                            >
+                                {tampilkanSaldo ? "🙈" : "👀"}
+                            </button>
+                            <span className="text-green-600"> Rp. {tampilkanSaldo ? Number(estimasiValue.toFixed(0)).toLocaleString('id-ID') : "********"}</span>
+                        </div>
                     </h2>
+
+
                     <button type="button" className="flex flex-col items-center space-x-2">
                         <h2 className="text-2xl text-gray-500">Profit/Loss:<br />
                             <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>
                                 {persen}%
                             </span><br />
-                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {(estimasiValue - sisaIdr).toLocaleString('id-ID')}
+                            <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {Number((estimasiValue - sisaIdr).toFixed(0)).toLocaleString('id-ID')}
                             </span>
                         </h2>
                         {/* <p>Total Sell {totalSell}</p> */}
@@ -135,13 +141,15 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
                     <button type="button" className="flex flex-col items-center space-x-2">
 
                         <h2 className="text-xl text-gray-500">Balance :
-                            <span className="text-green-600"> Rp. {(sisaIdr).toLocaleString('id-ID')}</span>
+                            <span className="text-green-600"> Rp. {tampilkanSaldo ? (sisaIdr).toLocaleString('id-ID') : "********"}</span>
                         </h2>
                         <h2 className="text-xl text-gray-500">Deposite :
-                            <span className="text-green-600"> Rp. {(totalDepo).toLocaleString('id-ID')}</span>
+                            {/* <span className="text-green-600"> Rp. {(totalDepo).toLocaleString('id-ID')}</span> */}
+                            <span className="text-green-600"> Rp. {tampilkanSaldo ? (totalDepo).toLocaleString('id-ID') : "********"}</span>
                         </h2>
                         <h2 className="text-xl text-gray-500">withdrawal :
                             <span className="text-green-600"> Rp. {Number(totalWd).toLocaleString('id-ID')}</span>
+                            {/* <span className="text-green-600"> Rp. {Number(totalWd).toLocaleString('id-ID')}</span> */}
                         </h2>
                     </button>
                 </div>

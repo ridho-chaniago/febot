@@ -1,62 +1,24 @@
 // History.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import TableHistory from '../molecules/TableHistory';                   
+import TableHistory from '../molecules/TableHistory';
 
-const History = ({history, dataBal, idr}) => {
-    // const [history, setHistory] = useState([]);
+const History = ({ history, dataBal, idr }) => {
     const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString('en-CA'));
-
-    // Fungsi untuk mendapatkan riwayat transaksi
-    const fetchHistory = async () => {
-        try {
-            // const response = await axios.get('http://192.168.11.201:3000/api/history');
-            // const response = await axios.get('http://localhost:3000/api/history');
-            const response = await axios.get('https://bot.serveo.net/api/history');
-            const dataNow = response.data.reverse();
-            const today = selectedDate;
-            const todayData = dataNow.filter(item => {
-                const date = new Date(item.timeBuy).toLocaleDateString('id-ID', {
-                    timeZone: 'Asia/Jakarta'
-                }); // hasil: "11/4/2025"
-
-                const [day, month, year] = date.split('/');
-                const formatted = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                return formatted === today;
-            });
-            
-            setHistory(todayData)
+    const [dataHistory, setDataHistory] = useState([]);
 
 
+    // console.log(dataNow)
+    const today = new Date().toISOString().split("T")[0];
 
-
-        } catch (error) {
-            console.error('Error fetching history:', error);
-        }
-    };
-    history.sort((a, b) => {
-        const parseDate = (str) => {
-            const [datePart, timePart] = str.split(', ');
-            const [day, month, year] = datePart.split('/').map(Number);
-            const [hour, minute] = timePart.split('.').map(Number);
-            return new Date(year, month - 1, day, hour, minute);
-        };
-
-        const dateA = parseDate(a.date);
-        const dateB = parseDate(b.date);
-        return dateB - dateA; // descending order (terbaru dulu)
+    const [filterDone, setFilterDone] = useState(false);
+    const [filterToday, setFilterToday] = useState(false);
+    const dataNow = history.filter(item => item.timeFilter === today);
+    const filteredData = history.filter(item => {
+        const isStatusOk = !filterDone || item.statusBuy === "filled" && item.statusSell === "done";
+        return isStatusOk;
     });
 
-    // console.table(history);
-
-    // Fungsi untuk melakukan sorting data
-    const buyData = history.filter(item => item.type === 'buy');
-    const sellData = history.filter(item => item.type === 'sell');
-    useEffect(() => {
-        const interval = setInterval(() => {
-            fetchHistory();
-        }, 10000); // 
-    }, [selectedDate]);
 
     return (
         <div>
@@ -72,23 +34,24 @@ const History = ({history, dataBal, idr}) => {
             </div>
 
             <div>
-                {/* Kolom BUY */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <h2 className="text-xl font-bold text-green-600 mb-2">
-                            BUY {buyData.length}
-                        </h2>
-                        <TableHistory history={buyData} />
+                <div>
+                    <h2 className="text-xl font-bold text-green-600 mb-2">
+                        BUY {history.length}
+                    </h2>
+                    <div className="flex gap-4 mb-4">
+                        <label>
+                            <input type="checkbox" checked={filterDone} onChange={() => setFilterDone(!filterDone)} />
+                            Status Done
+                        </label>
+                        <label>
+                            <input type="checkbox" checked={filterToday} onChange={() => setFilterToday(!filterToday)} />
+                            Hari Ini
+                        </label>
                     </div>
 
-                    <div>
-                        <h2 className="text-xl font-bold text-red-600 mb-2">
-                            SELL {sellData.length}
-                        </h2>
-                        <TableHistory history={sellData} />
-                    </div>
+
+                    <TableHistory history={!filterDone? dataNow : filteredData} />
                 </div>
-
             </div>
 
 
