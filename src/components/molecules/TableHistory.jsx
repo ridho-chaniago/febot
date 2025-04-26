@@ -1,8 +1,12 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+// import dataHistory from '../../redux/features/dataHistory';
 
-function TableHistory({ history }) {
-    function ft(finishTime) {
-        
+function TableHistory() {
+    const dataCoin = useSelector(state => state.dataCoin);
+    const dataHistory = useSelector(state => state.dataHistory);
+function ft(finishTime) {
+    
             const d = new Date(finishTime * 1000);
 
             const tanggal = d.getDate();
@@ -17,7 +21,7 @@ function TableHistory({ history }) {
         
 
     }
-    console.log(ft(1745518358)); // Harusnya tampil waktu yang jelas
+    // console.log(ft(1745518358)); // Harusnya tampil waktu yang jelas
 
     return (
         <div><table className="min-w-full bg-white table-auto border border-black rounded">
@@ -39,7 +43,7 @@ function TableHistory({ history }) {
                 </tr>
             </thead>
             <tbody className="bg-gray-100">
-                {history.map((item, index) => (
+                {dataHistory.map((item, index) => (
                     <tr key={index} className="hover:bg-gray-100 border-b-black">
                         <td className={`px-6 py-2 bg-gray-200`}>{index + 1}</td>
                         <td className={`px-6 py-2`}>{item.id}</td>
@@ -51,7 +55,7 @@ function TableHistory({ history }) {
                                 maximumFractionDigits: 0
                             }).format(item.buyPrice)}
                         </td>
-                        <td className={`px-4 py-2`}>{item.buyAmount.toFixed(2)}</td>
+                        <td className={`px-4 py-2`}>{Number(item.buyAmount).toFixed(2)}</td>
                         <td className={`px-4 py-2`}>{item.timeBuyLocal}</td>
                         <td className={`px-4 py-2 ${item.statusBuy === "filled" ? "bg-green-200" : "bg-red-200"}`}>{item.statusBuy}</td>
                         <td className="px-6 py-2">

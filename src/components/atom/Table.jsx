@@ -46,7 +46,7 @@ function Table({ pair, avg, buy, sell, i, totalIdr, last, history,balance, sellC
             <td className={`px-2 py-2 bg-gray-100 ${colorTextKetSell}`}>Rp.{Math.floor(avg).toLocaleString('id-ID')}</td>
             <td className={`px-2 py-2  bg-gray-200 `}>Rp.{Math.floor(Number(ketSell)).toLocaleString('id-ID')}</td>
             <td className={`px-2 py-2 text-sm  `}>Rp.{Math.floor(totalIdr).toLocaleString('id-ID')}</td>
-            <td className={`px-6 py-2 bg-green-100`}>{`sell Completed: ${sellCompleteLength} X `}</td>
+            <td className={`px-6 py-2 bg-green-100`}>{`sell Completed: ${sellCompleteLength}  `}</td>
             <td className={` py-2 bg-red-100`}>{`Profit Idr : ${Number(profitIdr.toFixed(2)).toLocaleString('id-ID')}`}</td>
         </tr>
 

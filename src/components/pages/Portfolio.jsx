@@ -1,41 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import axios, { all } from 'axios';
-import History from '../organisms/History';
+import React, { useState, useEffect, use } from 'react';
 import TableDashboard from '../molecules/TableDashboard';
-const Portfolio = ({ idr, updatedBalances, history }) => {
-    const [dataBal, setDataBal] = useState([]);
-    const [inOrderSell, setInOrderSell] = useState(0)
-    const [inOrderBuy, setInOrderBuy] = useState(0)
+import BotTimer from '../atom/botTimer';
+import ProfitReport from './ProfitReport';
+import { useDispatch, useSelector } from 'react-redux';
+import TableHistory from '../molecules/TableHistory';
+import Button from '../atom/Button';
+const Portfolio = () => {
+    const dataCoin = useSelector(state => state.dataCoin);
+    const dataHistory = useSelector(state => state.dataHistory);
+    const dataProfit=useSelector(state=>state.dataProfit)
+    const idr = dataCoin[0].idr
     const totalWd = 0
     const totalDepo = 3000171
     const sisaIdr = totalDepo - totalWd
     const asetCoinInIdr = Number(idr)
     const [tampilkanSaldo, setTampilkanSaldo] = useState(false);
-
-
-    useEffect(() => {
-        setInOrderSell(frozenSell)
-    }, [updatedBalances]);
-    console.log("render")
-    const totalSell = history.filter(item => item.statusSell === "done").length;
-    const allCoinProfitIdr = history
+    const totalSell = dataHistory.filter(item => item.statusSell === "done").length;
+    const allCoinProfitIdr = dataHistory
         .filter(item => item.statusSell === "done")
         .reduce((sum, item) => sum + (Number(item.amountSell) * Number(item.sellPrice)) - (Number(item.buyAmount) * Number(item.buyPrice)), 0);
-
-    const dataDataWithCalc = updatedBalances.map(item => {
+    const dataDataWithCalc = dataCoin.map(item => {
         const base = item.pair.split('_')[0];
-        const coin = history.filter(h => h.id === base && h.statusBuy == "pending" && !h.statusSell);
-        const coinBalance = history.filter(h => h.id === base && h.statusSell !== 'done' && h.statusBuy === 'filled');
-        // console.log(coin)
+        const coin = dataHistory.filter(h => h.id === base && h.statusBuy == "pending" && !h.statusSell);
+        const coinBalance = dataHistory.filter(h => h.id === base && h.statusSell !== 'done' && h.statusBuy === 'filled');
         const balanceSell = coinBalance.reduce((sum, h) => sum + Number(h.buyAmount), 0);
         const balanceBuy = coin.reduce((sum, h) => sum + Number(h.buyAmount), 0);
 
         const totalIdr = coinBalance.reduce((sum, h) => sum + Number(h.amountSell) * Number(item.last), 0);
-        const coinAvg = history.filter(h => h.id === base && h.statusBuy == 'filled' && h.statusSell == 'pending');
+        const coinAvg = dataHistory.filter(h => h.id === base && h.statusBuy == 'filled' && h.statusSell == 'pending');
 
         const avgBuy = coinAvg.length > 0 ? coinAvg.reduce((sum, h) => sum + Number(h.buyPrice), 0) / coinAvg.length : 0;
 
-        const sellComplete = history.filter(h => h.id === base && h.statusSell === "done");
+        const sellComplete = dataHistory.filter(h => h.id === base && h.statusSell === "done");
         const sellCompleteLength = sellComplete.length;
         const profitIdr = sellComplete.reduce((sum, h) =>
             sum + (Number(h.amountSell) * Number(h.sellPrice)) - (Number(h.buyAmount) * Number(h.buyPrice)), 0
@@ -52,11 +48,12 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
             balanceBuy,
         };
     });
-    // const updatedBalances=updatedBalances
-    // setDataBal(updatedBalances);
+    const totalSellLength = dataProfit.reduce((sum, item) => sum + Number(item.totalSell), 0);
+    const totalProfit = dataProfit.reduce((sum, item) => sum + Number(item.profit), 0);
+
     const frozenSell = dataDataWithCalc ? dataDataWithCalc.reduce((sum, item) => sum + item.balanceSell * item.last, 0)
         : 0;
-
+    const sisaCoinAktif = dataDataWithCalc.reduce((sum, item) => sum + (Number(item.balance) * Number(item.buy)), 0)
     const frozenBuy = dataDataWithCalc
         ? dataDataWithCalc.reduce((sum, item) => {
             const balance = Number(item.balanceBuy);
@@ -69,18 +66,15 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
         }, 0)
         : 0;
 
-    const estimasiValue = (asetCoinInIdr + frozenSell + frozenBuy+allCoinProfitIdr)
-    console.log(estimasiValue, asetCoinInIdr, frozenBuy, frozenSell)
+    const estimasiValue = (asetCoinInIdr + frozenSell + frozenBuy + allCoinProfitIdr + sisaCoinAktif)
     const persen = (((estimasiValue - totalDepo) / totalDepo) * 100).toFixed(2)
-    const [isVisible, setIsVisible] = useState(false); // Menyimpan apakah History ditampilkan atau tidak
-    console.log(estimasiValue, sisaIdr)
-    console.log("asetCoinIndr", asetCoinInIdr)
-    console.log("frozeSell", inOrderSell)
-    console.log("frozenBuy", frozenBuy)
-    const toggleVisibility = () => {
-        setIsVisible(!isVisible); // Membalikkan nilai dari isVisible
+    const [activePage, setActivePage] = useState("dashboard");
 
-    };
+    function handlePageChange(page) {
+        setActivePage(page);
+    }
+
+
     return (
         <div id='top' className="container mx-auto p-6">
             <header className="text-center mb-8">
@@ -91,7 +85,7 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
                 <div className=' w-[270px]'>
 
                     <h2 className="text-xl text-gray-500">In Idr :
-                        <span className="text-green-600"> Rp. {tampilkanSaldo ? idr.toLocaleString('id-ID') : "********"}</span>
+                        <span className="text-green-600"> Rp. {tampilkanSaldo ? (dataCoin[0].idr).toLocaleString('id-ID') : "********"}</span>
                         {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
                     </h2>
                     <h2 className="text-xl text-gray-500">In Order Sell :
@@ -129,12 +123,13 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
                         </h2>
                         {/* <p>Total Sell {totalSell}</p> */}
                         <h2 className="text-xl text-gray-500">Total Sell :
-                            <span className="text-green-600"> {totalSell}</span>
+                            <span className="text-green-600"> {totalSellLength}</span>
                         </h2>
                         <h2 className="text-xl text-gray-500">Total Profit :
-                            <span className="text-green-600"> Rp. {Number(allCoinProfitIdr.toFixed(0)).toLocaleString('id-ID')}</span>
+                            <span className="text-green-600"> Rp. {Number(totalProfit.toFixed(0)).toLocaleString('id-ID')}</span>
                         </h2>
                     </button>
+                    <BotTimer />
                 </div>
 
                 <div className=' w-[270px]'>
@@ -154,23 +149,34 @@ const Portfolio = ({ idr, updatedBalances, history }) => {
                     </button>
                 </div>
             </div>
-            <div className='flex justify-center flex-col'>
-                {/* Tombol untuk toggle visibility */}
+            <div className="flex flex-col items-center justify-center">
 
-                <p
-                    className="text-blue-600 font-bold px-4 py-2 rounded mb-4 text-center text-5xl"
-                >
-                    {isVisible ? 'History Trade' : 'Dashboard Page'}
-                </p>
-                <button
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mb-4"
-                    onClick={toggleVisibility}
-                >
-                    {isVisible ? 'DashBoard Pages' : 'History Trade'}
-                </button>
 
-                {/* Kondisional rendering untuk menampilkan History */}
-                {isVisible ? <History dataBal={updatedBalances} history={history} idr={idr} /> : <TableDashboard dataBal={updatedBalances} history={history} idr={idr} dataWithCalc={dataDataWithCalc} />}
+                <div className="flex space-x-2">
+                    <Button
+                        onClick={() => handlePageChange("dashboard")}
+                        isActive={activePage === "dashboard"}>
+                        Dashboard
+                    </Button>
+                    <Button
+                        onClick={() => handlePageChange("history")}
+                        isActive={activePage === "history"}>
+                        History
+                    </Button>
+                    <Button
+                        onClick={() => handlePageChange("profit")}
+                        isActive={activePage === "profit"}>
+                        Profit
+                    </Button>
+                </div>
+
+
+
+                {activePage === "dashboard" && <TableDashboard dataWithCalc={dataDataWithCalc} />}
+                {activePage === "history" && <TableHistory />}
+                {activePage === "profit" && <ProfitReport />}
+
+
             </div>
         </div>
     );
