@@ -49,13 +49,13 @@ const Dashboard = () => {
     async function fetchData(item) {
         try {
             // const dataReady = await axios.get('http://192.168.11.201:3000/api/balance');
-            const dataReady = await axios.get('http://localhost:3000/api/balance');
-            // const dataReady = await axios.get('https://bot.serveo.net/api/balance');
+            // const dataReady = await axios.get('http://localhost:3000/api/balance');
+            const dataReady = await axios.get('https://bot.serveo.net/api/balance');
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
             // const dataHistoryResponse = await axios.get('http://192.168.11.201:3000/api/history');
-            // const dataHistoryResponse = await axios.get('https://bot.serveo.net/api/history');
-            const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
+            const dataHistoryResponse = await axios.get('https://bot.serveo.net/api/history');
+            // const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
             const dataHistoryy = dataHistoryResponse.data
                 .map(item => {
                     const timeBuy = item.timeBuy ? new Date(item.timeBuy) : null;
