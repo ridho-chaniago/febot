@@ -54,6 +54,12 @@ const Portfolio = () => {
     const frozenSell = dataDataWithCalc ? dataDataWithCalc.reduce((sum, item) => sum + item.balanceSell * item.last, 0)
         : 0;
     const sisaCoinAktif = dataDataWithCalc.reduce((sum, item) => sum + (Number(item.balance) * Number(item.buy)), 0)
+    console.log("idr di koin aktif",sisaCoinAktif)
+    const koinAktif= dataDataWithCalc.filter(item=>item.balance>0).map(item=>({coin:item.coin,balance:item.balance,totalIdr:Math.floor(Number(item.balance)*Number(item.buy))})).sort((a, b) => b.totalIdr - a.totalIdr);
+    console.log(koinAktif)
+    console.log(dataDataWithCalc)
+    const dataRusak=dataDataWithCalc.filter(item=>!item.balanceBuy)
+    console.log("data Rusak",dataRusak)
     const frozenBuy = dataDataWithCalc
         ? dataDataWithCalc.reduce((sum, item) => {
             const balance = Number(item.balanceBuy);
