@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setDataCoin } from '../../redux/features/dataCoin';
 import { setDataHistory } from '../../redux/features/dataHistory';
 import { setDataProfit } from '../../redux/features/dataProfit';
+import { data } from 'autoprefixer';
 
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
@@ -15,18 +16,47 @@ const Dashboard = () => {
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
 
-    function ft(finishTime) {
-        const d = new Date(finishTime * 1000);
+    // Format tanggal
+    function ft(unixTime) {
+        const d = new Date(unixTime * 1000);
         const tanggal = d.getDate();
         const bulan = d.getMonth() + 1;
         const tahun = d.getFullYear();
         return `${tanggal}/${bulan}/${tahun}`;
     }
-    const soldTransactions = dataHistory.filter(item => item.finish_time).map(item => ({ ...item, finish_time: ft(Number(item.finish_time)) }));
+
+    // Ambil transaksi buy yang statusnya filled
+    const buyTransactions = dataHistory
+        .filter(item => item.statusBuy === "filled")
+        .map(item => ({
+            ...item,
+            buyDate:(item.timeBuy).split("T")[0]// <<< fix disini pakai time beli dan di-format
+        }));
+
+    // Ambil transaksi sold
+    const soldTransactions = dataHistory
+        .filter(item => item.finish_time)
+        .map(item => ({
+            ...item,
+            sellDate: ft(Number(item.finish_time)) // <<< konsisten formatting
+        }));
+
+    // Inisialisasi
     const profitByDate = {};
 
+    // Rekap transaksi beli
+    // buyTransactions.forEach(item => {
+    //     const buyDate = item.buyDate;
+    //     if (!profitByDate[buyDate]) {
+    //         profitByDate[buyDate] = { totalBuy: 1 };
+    //     } else {
+    //         profitByDate[buyDate].totalBuy += 1;
+    //     }
+    // });
+
+    // Rekap transaksi jual
     soldTransactions.forEach(item => {
-        const sellDate = item.finish_time;
+        const sellDate = item.sellDate;
         const profit = Math.ceil((Number(item.sellPrice) - Number(item.buyPrice)) * Number(item.amountSell));
 
         if (!profitByDate[sellDate]) {
@@ -35,29 +65,34 @@ const Dashboard = () => {
                 totalSell: 1,
             };
         } else {
-            profitByDate[sellDate].profit += profit;
-            profitByDate[sellDate].totalSell += 1;
+            profitByDate[sellDate].profit = (profitByDate[sellDate].profit || 0) + profit;
+            profitByDate[sellDate].totalSell = (profitByDate[sellDate].totalSell || 0) + 1;
         }
     });
+
+    // Jadiin array
     const profitByDateArray = Object.entries(profitByDate).map(([date, data]) => ({
         date,
-        profit: data.profit,
-        totalSell: data.totalSell,
+        profit: data.profit || 0,
+        totalSell: data.totalSell || 0,
+        totalBuy: data.totalBuy || 0
     }));
+console.log(profitByDate)
+    // Dispatch ke redux atau state
     dispatch(setDataProfit(profitByDateArray));
-    console.log("Data Profit:", profitByDateArray);
+
     async function fetchData(item) {
         try {
             // const dataReady = await axios.get('http://192.168.11.201:3000/api/balance');
-            const dataReady = await axios.get('http://localhost:3000/api/balance');
-            // const dataReady = await axios.get('https://bot.serveo.net/api/balance');
+            // const dataReady = await axios.get('http://localhost:3000/api/balance');
+            const dataReady = await axios.get('https://bot.serveo.net/api/balance');
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
             // const dataHistoryResponse = await axios.get('http://192.168.11.201:3000/api/history');
-            // const dataHistoryResponse = await axios.get('https://bot.serveo.net/api/history');
-            const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
-            const dataRusak=dataHistoryResponse.data.filter(item => !item.buyPrice);
-            console.log("data rusak " ,dataRusak);
+            const dataHistoryResponse = await axios.get('https://bot.serveo.net/api/history');
+            // const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
+            const dataRusak = dataHistoryResponse.data.filter(item => !item.buyPrice);
+            console.log("data rusak ", dataRusak);
             const dataHistoryy = dataHistoryResponse.data
                 .map(item => {
                     const timeBuy = item.timeBuy ? new Date(item.timeBuy) : null;
@@ -81,17 +116,18 @@ const Dashboard = () => {
     }
     useEffect(() => {
         fetchData(); // jalan sekali waktu mount
-    
+
         const intervalId = setInterval(() => {
             fetchData(); // jalan setiap 10 detik
         }, 10000);
-    
+
         return () => clearInterval(intervalId); // bersihkan interval saat unmount
     }, []);
-    
+
     if (loading) {
-        return <p className="text-center text-blue-500">Loading...</p>;}
-    if (error) {return <p className="text-center text-red-500">{error}</p>;}
+        return <p className="text-center text-blue-500">Loading...</p>;
+    }
+    if (error) { return <p className="text-center text-red-500">{error}</p>; }
     return (
         <div className="min-h-screen bg-blue-100 ">
             <a href="#top">

@@ -11,7 +11,7 @@ const Portfolio = () => {
     const dataProfit=useSelector(state=>state.dataProfit)
     const idr = dataCoin[0].idr
     const totalWd = 0
-    const totalDepo = 3000171
+    const totalDepo = 3000171+4000796
     const sisaIdr = totalDepo - totalWd
     const asetCoinInIdr = Number(idr)
     const [tampilkanSaldo, setTampilkanSaldo] = useState(false);
@@ -57,9 +57,7 @@ const Portfolio = () => {
     console.log("idr di koin aktif",sisaCoinAktif)
     const koinAktif= dataDataWithCalc.filter(item=>item.balance>0).map(item=>({coin:item.coin,balance:item.balance,totalIdr:Math.floor(Number(item.balance)*Number(item.buy))})).sort((a, b) => b.totalIdr - a.totalIdr);
     console.log(koinAktif)
-    console.log(dataDataWithCalc)
-    const dataRusak=dataDataWithCalc.filter(item=>!item.balanceBuy)
-    console.log("data Rusak",dataRusak)
+    // console.log(dataDataWithCalc)
     const frozenBuy = dataDataWithCalc
         ? dataDataWithCalc.reduce((sum, item) => {
             const balance = Number(item.balanceBuy);
@@ -127,7 +125,6 @@ const Portfolio = () => {
                             <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {Number((estimasiValue - sisaIdr).toFixed(0)).toLocaleString('id-ID')}
                             </span>
                         </h2>
-                        {/* <p>Total Sell {totalSell}</p> */}
                         <h2 className="text-xl text-gray-500">Total Sell :
                             <span className="text-green-600"> {totalSellLength}</span>
                         </h2>
