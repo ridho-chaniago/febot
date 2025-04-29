@@ -84,12 +84,18 @@ console.log(profitByDate)
     async function fetchData(item) {
         try {
             // const dataReady = await axios.get('http://192.168.11.201:3000/api/balance');
+            const dataReady = await axios.get('http://54.253.16.78:3000/api/balance');
+            // const dataReady = await axios.get('http://103.112.162.227:3001/api/balance');
+            // const dataReady = await axios.get('https://helmi.serveo.net/api/balance');
+            // const dataReady = await axios.get('http://localhost:3001/api/balance');
             // const dataReady = await axios.get('http://localhost:3000/api/balance');
-            const dataReady = await axios.get('https://helmi.serveo.net/api/balance');
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
             // const dataHistoryResponse = await axios.get('http://192.168.11.201:3000/api/history');
-            const dataHistoryResponse = await axios.get('https://helmi.serveo.net/api/history');
+            const dataHistoryResponse = await axios.get('http://54.253.16.78:3000/api/history');
+            // const dataHistoryResponse = await axios.get('http://103.112.162.227:3001/api/history');
+            // const dataHistoryResponse = await axios.get('https://helmi.serveo.net/api/history');
+            // const dataHistoryResponse = await axios.get('http://localhost:3001/api/history');
             // const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
             const dataRusak = dataHistoryResponse.data.filter(item => !item.buyPrice);
             console.log("data rusak ", dataRusak);
