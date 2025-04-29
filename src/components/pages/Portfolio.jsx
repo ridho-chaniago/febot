@@ -11,7 +11,8 @@ const Portfolio = () => {
     const dataProfit=useSelector(state=>state.dataProfit)
     const idr = dataCoin[0].idr
     const totalWd = 0
-    const totalDepo = 3000171+4000796
+    // const totalDepo = 3000171+4000796
+    const totalDepo = 20000000
     const sisaIdr = totalDepo - totalWd
     const asetCoinInIdr = Number(idr)
     const [tampilkanSaldo, setTampilkanSaldo] = useState(false);
@@ -117,7 +118,7 @@ const Portfolio = () => {
                     </h2>
 
 
-                    <button type="button" className="flex flex-col items-center space-x-2">
+                    <button type="button" className=" hidden sm:flex flex-col items-center space-x-2">
                         <h2 className="text-2xl text-gray-500">Profit/Loss:<br />
                             <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>
                                 {persen}%
@@ -125,7 +126,7 @@ const Portfolio = () => {
                             <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {Number((estimasiValue - sisaIdr).toFixed(0)).toLocaleString('id-ID')}
                             </span>
                         </h2>
-                        <h2 className="text-xl text-gray-500">Total Sell :
+                        <h2 className="text-xl  text-gray-500">Total Sell :
                             <span className="text-green-600"> {totalSellLength}</span>
                         </h2>
                         <h2 className="text-xl text-gray-500">Total Profit :

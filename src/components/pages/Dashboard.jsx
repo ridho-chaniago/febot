@@ -85,11 +85,11 @@ console.log(profitByDate)
         try {
             // const dataReady = await axios.get('http://192.168.11.201:3000/api/balance');
             // const dataReady = await axios.get('http://localhost:3000/api/balance');
-            const dataReady = await axios.get('https://bot.serveo.net/api/balance');
+            const dataReady = await axios.get('https://helmi.serveo.net/api/balance');
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
             // const dataHistoryResponse = await axios.get('http://192.168.11.201:3000/api/history');
-            const dataHistoryResponse = await axios.get('https://bot.serveo.net/api/history');
+            const dataHistoryResponse = await axios.get('https://helmi.serveo.net/api/history');
             // const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
             const dataRusak = dataHistoryResponse.data.filter(item => !item.buyPrice);
             console.log("data rusak ", dataRusak);

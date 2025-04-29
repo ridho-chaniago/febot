@@ -5,11 +5,11 @@ export default function BotTimer() {
 
     // Ambil waktu pukul 00:01 WIB hari ini
     const getStartTime = () => {
-        const now = new Date(2025, 3, 25, 0, 0, 1); 
+        const now = new Date(2025, 3, 29, 0, 0, 0); 
 // bulan dihitung dari 0, jadi 3 = April
 
         const jakarta = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
-        jakarta.setHours(0, 1, 0, 0); // 00:01 WIB
+        jakarta.setHours(13, 0, 0, 0); // 00:01 WIB
         return jakarta.getTime();
     };
 
