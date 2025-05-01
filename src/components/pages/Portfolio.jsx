@@ -5,17 +5,17 @@ import ProfitReport from './ProfitReport';
 import { useDispatch, useSelector } from 'react-redux';
 import TableHistory from '../molecules/TableHistory';
 import Button from '../atom/Button';
-const Portfolio = () => {
+const Portfolio = ({ idrHold }) => {
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
-    const dataProfit=useSelector(state=>state.dataProfit)
+    const dataProfit = useSelector(state => state.dataProfit)
     const idr = dataCoin[0].idr
     const totalWd = 0
     // const totalDepo = 3000171+4000796
     const totalDepo = 20000000
     const sisaIdr = totalDepo - totalWd
     const asetCoinInIdr = Number(idr)
-    const [tampilkanSaldo, setTampilkanSaldo] = useState(false);
+    const [tampilkanSaldo, setTampilkanSaldo] = useState(true);
     const totalSell = dataHistory.filter(item => item.statusSell === "done").length;
     const allCoinProfitIdr = dataHistory
         .filter(item => item.statusSell === "done")
@@ -52,12 +52,8 @@ const Portfolio = () => {
     const totalSellLength = dataProfit.reduce((sum, item) => sum + Number(item.totalSell), 0);
     const totalProfit = dataProfit.reduce((sum, item) => sum + Number(item.profit), 0);
 
-    const frozenSell = dataDataWithCalc ? dataDataWithCalc.reduce((sum, item) => sum + item.balanceSell * item.last, 0)
-        : 0;
-    const sisaCoinAktif = dataDataWithCalc.reduce((sum, item) => sum + (Number(item.balance) * Number(item.buy)), 0)
-    console.log("idr di koin aktif",sisaCoinAktif)
-    const koinAktif= dataDataWithCalc.filter(item=>item.balance>0).map(item=>({coin:item.coin,balance:item.balance,totalIdr:Math.floor(Number(item.balance)*Number(item.buy))})).sort((a, b) => b.totalIdr - a.totalIdr);
-    console.log(koinAktif)
+    
+
     // console.log(dataDataWithCalc)
     const frozenBuy = dataDataWithCalc
         ? dataDataWithCalc.reduce((sum, item) => {
@@ -70,8 +66,14 @@ const Portfolio = () => {
             return sum + balance * price;
         }, 0)
         : 0;
-
-    const estimasiValue = (asetCoinInIdr + frozenSell + frozenBuy + allCoinProfitIdr + sisaCoinAktif)
+    // ESTIMASI ASSET VALUE 
+    const frozenSell = dataDataWithCalc ? dataDataWithCalc.reduce((sum, item) => sum + item.hold * item.last, 0): 0;
+    const sisaCoinAktif = dataDataWithCalc.reduce((sum, item) => sum + (Number(item.balance) * Number(item.buy)), 0)
+    console.log("idr di koin aktif", sisaCoinAktif)
+    const koinAktif = dataDataWithCalc.filter(item => item.balance > 0).map(item => ({ coin: item.coin, balance: item.balance, totalIdr: Math.floor(Number(item.balance) * Number(item.buy)) })).sort((a, b) => b.totalIdr - a.totalIdr);
+    console.log(koinAktif)
+    const estimasiValue = Number(idrHold) + Number(frozenSell) + Number(sisaCoinAktif)+idr
+    // const estimasiValue = (asetCoinInIdr + frozenSell + frozenBuy + allCoinProfitIdr + sisaCoinAktif)
     const persen = (((estimasiValue - totalDepo) / totalDepo) * 100).toFixed(2)
     const [activePage, setActivePage] = useState("dashboard");
 
@@ -93,12 +95,12 @@ const Portfolio = () => {
                         <span className="text-green-600"> Rp. {tampilkanSaldo ? (dataCoin[0].idr).toLocaleString('id-ID') : "********"}</span>
                         {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
                     </h2>
+                    <h2 className="text-xl text-gray-500">idr Hold :
+                        <span className="text-green-600"> Rp. {(Number(idrHold.toFixed(0))).toLocaleString('id-ID')}</span>
+
+                    </h2>
                     <h2 className="text-xl text-gray-500">In Order Sell :
                         <span className="text-green-600"> Rp. {Number(frozenSell.toFixed(0)).toLocaleString('id-ID')}</span>
-                    </h2>
-                    <h2 className="text-xl text-gray-500">in Order Buy :
-                        <span className="text-green-600"> Rp. {Number(frozenBuy.toFixed(0)).toLocaleString('id-ID')}</span>
-
                     </h2>
                 </div>
                 <div className='flex flex-col'>

@@ -11,7 +11,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     let i = 1;
-
+    const [idrHold, setIdrHold] = useState(0);
     const dispatch = useDispatch();
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
@@ -24,16 +24,6 @@ const Dashboard = () => {
         const tahun = d.getFullYear();
         return `${tanggal}/${bulan}/${tahun}`;
     }
-
-    // Ambil transaksi buy yang statusnya filled
-    const buyTransactions = dataHistory
-        .filter(item => item.statusBuy === "filled")
-        .map(item => ({
-            ...item,
-            buyDate:(item.timeBuy).split("T")[0]// <<< fix disini pakai time beli dan di-format
-        }));
-
-    // Ambil transaksi sold
     const soldTransactions = dataHistory
         .filter(item => item.finish_time)
         .map(item => ({
@@ -44,17 +34,6 @@ const Dashboard = () => {
     // Inisialisasi
     const profitByDate = {};
 
-    // Rekap transaksi beli
-    // buyTransactions.forEach(item => {
-    //     const buyDate = item.buyDate;
-    //     if (!profitByDate[buyDate]) {
-    //         profitByDate[buyDate] = { totalBuy: 1 };
-    //     } else {
-    //         profitByDate[buyDate].totalBuy += 1;
-    //     }
-    // });
-
-    // Rekap transaksi jual
     soldTransactions.forEach(item => {
         const sellDate = item.sellDate;
         const profit = Math.ceil((Number(item.sellPrice) - Number(item.buyPrice)) * Number(item.amountSell));
@@ -84,15 +63,23 @@ console.log(profitByDate)
     async function fetchData(item) {
         try {
             // const dataReady = await axios.get('http://192.168.11.201:3000/api/balance');
+            // const dataReady = await axios.get('http://54.253.16.78:3000/api/balance');
+            // const dataReady = await axios.get('http://103.112.162.227:3001/api/balance');
+            const dataReady = await axios.get('https://fa4b-2001-df4-b100-3-1-1-689a-32f9.ngrok-free.app/api/balance');
+            // const dataReady = await axios.get('http://localhost:3001/api/balance');
+            const idrHold=dataReady.data.data.idrHold
+            setIdrHold(idrHold)
             // const dataReady = await axios.get('http://localhost:3000/api/balance');
-            const dataReady = await axios.get('https://helmi.serveo.net/api/balance');
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
             // const dataHistoryResponse = await axios.get('http://192.168.11.201:3000/api/history');
-            const dataHistoryResponse = await axios.get('https://helmi.serveo.net/api/history');
+            // const dataHistoryResponse = await axios.get('http://54.253.16.78:3000/api/history');
+            // const dataHistoryResponse = await axios.get('http://103.112.162.227:3001/api/history');
+            const dataHistoryResponse = await axios.get('https://fa4b-2001-df4-b100-3-1-1-689a-32f9.ngrok-free.app/api/history');
+            // const dataHistoryResponse = await axios.get('http://localhost:3001/api/history');
             // const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
-            const dataRusak = dataHistoryResponse.data.filter(item => !item.buyPrice);
-            console.log("data rusak ", dataRusak);
+            // const dataRusak = dataHistoryResponse.data.filter(item => !item.buyPrice);
+            // console.log("data rusak ", dataRusak);
             const dataHistoryy = dataHistoryResponse.data
                 .map(item => {
                     const timeBuy = item.timeBuy ? new Date(item.timeBuy) : null;
@@ -106,6 +93,7 @@ console.log(profitByDate)
                     };
                 })
                 .reverse(); // Data terbaru paling atas
+                console.log("ini data ",dataReady.data.data.ticker)
 
             dispatch(setDataHistory(dataHistoryy));
         } catch (error) {
@@ -134,7 +122,7 @@ console.log(profitByDate)
                 <button className='bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded fixed bottom-4 right-4'>          Top
                 </button>
             </a>
-            <Portfolio />
+            <Portfolio idrHold={idrHold}/>
         </div>
     );
 };
