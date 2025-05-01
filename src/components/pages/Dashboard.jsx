@@ -56,7 +56,7 @@ const Dashboard = () => {
         totalSell: data.totalSell || 0,
         totalBuy: data.totalBuy || 0
     }));
-console.log(profitByDate)
+    console.log(profitByDate)
     // Dispatch ke redux atau state
     dispatch(setDataProfit(profitByDateArray));
 
@@ -64,19 +64,32 @@ console.log(profitByDate)
         try {
             // const dataReady = await axios.get('http://192.168.11.201:3000/api/balance');
             // const dataReady = await axios.get('http://54.253.16.78:3000/api/balance');
-            // const dataReady = await axios.get('http://103.112.162.227:3001/api/balance');
-            const dataReady = await axios.get('https://fa4b-2001-df4-b100-3-1-1-689a-32f9.ngrok-free.app/api/balance');
-            // const dataReady = await axios.get('http://localhost:3001/api/balance');
-            const idrHold=dataReady.data.data.idrHold
-            setIdrHold(idrHold)
+            const dataReady = await axios.get('https://121b-54-253-16-78.ngrok-free.app/api/balance', {
+                headers: {
+                  'ngrok-skip-browser-warning': 'true'
+                }
+              });;
+            // const dataReady = await axios.get('https://fa4b-2001-df4-b100-3-1-1-689a-32f9.ngrok-free.app/api/balance');
             // const dataReady = await axios.get('http://localhost:3000/api/balance');
+            // const dataReady = await axios.get('http://localhost:3001/api/balance');
+            console.log("dataReady:", dataReady);  // Menampilkan seluruh data yang diterima dari server
+            console.log("dataReady.data:", dataReady.data);  // Memeriksa bagian 'data' dari respons
+            console.log("dataReady.data.data:", dataReady.data.data);  // Memeriksa bagian dalam 'data'
+            console.log("idrHold:", dataReady.data.data?.idrHold);  // Mengakses idrHold dengan pengecekan
+
+            console.log(dataReady.status)
+            const idrHold = dataReady.data.data.idrHold
+            console.log("data ready", dataReady)
+            setIdrHold(idrHold)
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
             // const dataHistoryResponse = await axios.get('http://192.168.11.201:3000/api/history');
             // const dataHistoryResponse = await axios.get('http://54.253.16.78:3000/api/history');
-            // const dataHistoryResponse = await axios.get('http://103.112.162.227:3001/api/history');
-            const dataHistoryResponse = await axios.get('https://fa4b-2001-df4-b100-3-1-1-689a-32f9.ngrok-free.app/api/history');
-            // const dataHistoryResponse = await axios.get('http://localhost:3001/api/history');
+            const dataHistoryResponse = await axios.get('https://121b-54-253-16-78.ngrok-free.app/api/history', {
+                headers: {
+                  'ngrok-skip-browser-warning': 'true'
+                }
+              });            // const dataHistoryResponse = await axios.get('http://localhost:3001/api/history');
             // const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
             // const dataRusak = dataHistoryResponse.data.filter(item => !item.buyPrice);
             // console.log("data rusak ", dataRusak);
@@ -93,7 +106,7 @@ console.log(profitByDate)
                     };
                 })
                 .reverse(); // Data terbaru paling atas
-                console.log("ini data ",dataReady.data.data.ticker)
+            console.log("ini data ", dataReady.data.data.ticker)
 
             dispatch(setDataHistory(dataHistoryy));
         } catch (error) {
@@ -122,7 +135,7 @@ console.log(profitByDate)
                 <button className='bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded fixed bottom-4 right-4'>          Top
                 </button>
             </a>
-            <Portfolio idrHold={idrHold}/>
+            <Portfolio idrHold={idrHold} />
         </div>
     );
 };

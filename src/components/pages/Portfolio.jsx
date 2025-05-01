@@ -12,7 +12,7 @@ const Portfolio = ({ idrHold }) => {
     const idr = dataCoin[0].idr
     const totalWd = 0
     // const totalDepo = 3000171+4000796
-    const totalDepo = 20000000
+    const totalDepo = 7000000+12500000
     const sisaIdr = totalDepo - totalWd
     const asetCoinInIdr = Number(idr)
     const [tampilkanSaldo, setTampilkanSaldo] = useState(true);
