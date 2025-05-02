@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setDataCoin } from '../../redux/features/dataCoin';
 import { setDataHistory } from '../../redux/features/dataHistory';
 import { setDataProfit } from '../../redux/features/dataProfit';
+import { useMediaQuery } from '@mui/material';
 import { data } from 'autoprefixer';
+import Portfolio2 from './Portofolio2';
 
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ const Dashboard = () => {
     const dispatch = useDispatch();
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
-
+    const isSmallScreen = useMediaQuery('(max-width:600px)');
     // Format tanggal
     function ft(unixTime) {
         const d = new Date(unixTime * 1000);
@@ -62,16 +64,11 @@ const Dashboard = () => {
 
     async function fetchData(item) {
         try {
-            // const dataReady = await axios.get('http://192.168.11.201:3000/api/balance');
-            // const dataReady = await axios.get('http://54.253.16.78:3000/api/balance');
             const dataReady = await axios.get('https://121b-54-253-16-78.ngrok-free.app/api/balance', {
                 headers: {
                   'ngrok-skip-browser-warning': 'true'
                 }
-              });;
-            // const dataReady = await axios.get('https://fa4b-2001-df4-b100-3-1-1-689a-32f9.ngrok-free.app/api/balance');
-            // const dataReady = await axios.get('http://localhost:3000/api/balance');
-            // const dataReady = await axios.get('http://localhost:3001/api/balance');
+              });
             console.log("dataReady:", dataReady);  // Menampilkan seluruh data yang diterima dari server
             console.log("dataReady.data:", dataReady.data);  // Memeriksa bagian 'data' dari respons
             console.log("dataReady.data.data:", dataReady.data.data);  // Memeriksa bagian dalam 'data'
@@ -83,16 +80,11 @@ const Dashboard = () => {
             setIdrHold(idrHold)
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
-            // const dataHistoryResponse = await axios.get('http://192.168.11.201:3000/api/history');
-            // const dataHistoryResponse = await axios.get('http://54.253.16.78:3000/api/history');
             const dataHistoryResponse = await axios.get('https://121b-54-253-16-78.ngrok-free.app/api/history', {
                 headers: {
                   'ngrok-skip-browser-warning': 'true'
                 }
-              });            // const dataHistoryResponse = await axios.get('http://localhost:3001/api/history');
-            // const dataHistoryResponse = await axios.get('http://localhost:3000/api/history');
-            // const dataRusak = dataHistoryResponse.data.filter(item => !item.buyPrice);
-            // console.log("data rusak ", dataRusak);
+              });
             const dataHistoryy = dataHistoryResponse.data
                 .map(item => {
                     const timeBuy = item.timeBuy ? new Date(item.timeBuy) : null;
@@ -131,11 +123,11 @@ const Dashboard = () => {
     if (error) { return <p className="text-center text-red-500">{error}</p>; }
     return (
         <div className="min-h-screen bg-blue-100 ">
-            <a href="#top">
+            {/* <a href="#top">
                 <button className='bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded fixed bottom-4 right-4'>          Top
                 </button>
-            </a>
-            <Portfolio idrHold={idrHold} />
+            </a> */}
+            {isSmallScreen ? <Portfolio2 idrHold={idrHold} /> : <Portfolio idrHold={idrHold} />}
         </div>
     );
 };
