@@ -65,11 +65,7 @@ const Dashboard = () => {
 
     async function fetchData(item) {
         try {
-            const dataReady = await axios.get(api.balance, {
-                headers: {
-                  'ngrok-skip-browser-warning': 'true'
-                }
-              });
+            const dataReady = await axios.get(api.balance);
             console.log("dataReady:", dataReady);  // Menampilkan seluruh data yang diterima dari server
             console.log("dataReady.data:", dataReady.data);  // Memeriksa bagian 'data' dari respons
             console.log("dataReady.data.data:", dataReady.data.data);  // Memeriksa bagian dalam 'data'
@@ -81,11 +77,7 @@ const Dashboard = () => {
             setIdrHold(idrHold)
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
-            const dataHistoryResponse = await axios.get(api.history, {
-                headers: {
-                  'ngrok-skip-browser-warning': 'true'
-                }
-              });
+            const dataHistoryResponse = await axios.get(api.history);
             const dataHistoryy = dataHistoryResponse.data
                 .map(item => {
                     const timeBuy = item.timeBuy ? new Date(item.timeBuy) : null;
