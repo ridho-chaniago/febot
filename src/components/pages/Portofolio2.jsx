@@ -9,6 +9,7 @@ import Button from '../atom/Button';
 import TableHistory2 from '../molecules/TableHistory2';
 import ProfitReport2 from './ProfitReport2';
 import TableDashboard2 from '../molecules/TableDashBoard2';
+
 const Portfolio2 = ({ idrHold }) => {
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
@@ -120,6 +121,9 @@ const Portfolio2 = ({ idrHold }) => {
                             </button>
                             <span className="text-green-600"> Rp. {tampilkanSaldo ? Number(estimasiValue.toFixed(0)).toLocaleString('id-ID') : "********"}</span>
                         </div>
+                        <p className={`text-sm text-gray-500`}>
+                            Deposite: Rp. {Number(totalDepo.toFixed(0)).toLocaleString('id-ID')}
+                        </p>
                         <span className={`text-sm ${persen >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             Profit: {persen}% ( <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {Number((estimasiValue - sisaIdr).toFixed(0)).toLocaleString('id-ID')}
                             </span> )
