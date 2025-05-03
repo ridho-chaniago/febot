@@ -74,9 +74,7 @@ const Portfolio2 = ({ idrHold }) => {
     // ESTIMASI ASSET VALUE 
     const frozenSell = dataDataWithCalc ? dataDataWithCalc.reduce((sum, item) => sum + item.hold * item.last, 0) : 0;
     const sisaCoinAktif = dataDataWithCalc.reduce((sum, item) => sum + (Number(item.balance) * Number(item.buy)), 0)
-    console.log("idr di koin aktif", sisaCoinAktif)
     const koinAktif = dataDataWithCalc.filter(item => item.balance > 0).map(item => ({ coin: item.coin, balance: item.balance, totalIdr: Math.floor(Number(item.balance) * Number(item.buy)) })).sort((a, b) => b.totalIdr - a.totalIdr);
-    console.log(koinAktif)
     const estimasiValue = Number(idrHold) + Number(frozenSell) + Number(sisaCoinAktif) + idr
     // const estimasiValue = (asetCoinInIdr + frozenSell + frozenBuy + allCoinProfitIdr + sisaCoinAktif)
     const persen = (((estimasiValue - totalDepo) / totalDepo) * 100).toFixed(2)
@@ -93,24 +91,8 @@ const Portfolio2 = ({ idrHold }) => {
                 <h1 className="text-4xl font-bold text-gray-800">Crypto Portfolio</h1>
             </header>
 
-            <div className="portfolio-summary mb-6 flex flex-col-reverse justify-center items-center">
-                <div className=' w-[270px] flex justify-around'>
-
-                    <h2 className="text-xs text-gray-500">In Idr :<br/>
-                        <span className="text-green-600"> Rp. {tampilkanSaldo ? (dataCoin[0].idr).toLocaleString('id-ID') : "********"}</span>
-                        {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
-                    </h2>
-                    <h2 className="text-xs text-gray-500">idr Hold :<br/>
-                        <span className="text-green-600"> Rp. {(Number(idrHold.toFixed(0))).toLocaleString('id-ID')}</span>
-
-                    </h2>
-                    <h2 className="text-xs text-gray-500">In Order Sell :<br/>
-                        <span className="text-green-600"> Rp. {Number(frozenSell.toFixed(0)).toLocaleString('id-ID')}</span>
-                    </h2>
-                </div>
+            <div className="portfolio-summary mb-2 flex flex-col justify-center items-center">
                 <div className='flex flex-col justify-center items-center'>
-
-
                     <div className="  w-[270px] text-xl text-center font-semibold mb-3 text-gray-700">Estimated Asset Value :<br />
                         <div className='flex items-center justify-center'>
                             <button
@@ -128,6 +110,31 @@ const Portfolio2 = ({ idrHold }) => {
                             Profit: {persen}% ( <span className={persen >= 0 ? 'text-green-600' : 'text-red-600'}>Rp. {Number((estimasiValue - sisaIdr).toFixed(0)).toLocaleString('id-ID')}
                             </span> )
                         </span>
+                    </div>
+                </div>
+                <div className=' w-[270px] flex justify-around'>
+
+                    <h2 className="text-xs text-gray-500">In Idr :<br />
+                        <span className="text-green-600"> Rp. {tampilkanSaldo ? (dataCoin[0].idr).toLocaleString('id-ID') : "********"}</span>
+                        {/* <span className="text-green-600">Rp. {(depo-(Number(wd)+wdManual)).toLocaleString('id-ID')}</span> */}
+                    </h2>
+                    <h2 className="text-xs text-gray-500">idr Hold :<br />
+                        <span className="text-green-600"> Rp. {(Number(idrHold.toFixed(0))).toLocaleString('id-ID')}</span>
+
+                    </h2>
+                    <h2 className="text-xs text-gray-500">In Order Sell :<br />
+                        <span className="text-green-600"> Rp. {Number(frozenSell.toFixed(0)).toLocaleString('id-ID')}</span>
+                    </h2>
+                </div>
+                <div className="relative group w-fit">
+                    <button className="text-xs text-gray-500 mt-2">
+                        In Coin Active:
+                        <span className="text-green-600"> Rp. {Number(sisaCoinAktif.toFixed(0)).toLocaleString('id-ID')}</span>
+                    </button>
+
+                    {/* Tooltip muncul saat hover */}
+                    <div className="absolute bottom-full mb-1 left-0 bg-black text-white text-[10px] p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                        Idr dalam koin yg belum dijual oleh bot
                     </div>
                 </div>
             </div>
@@ -165,9 +172,9 @@ const Portfolio2 = ({ idrHold }) => {
 
 
 
-                {activePage === "dashboard" && <TableDashboard2 dataWithCalc={dataDataWithCalc} />}
-                {activePage === "history" && <TableHistory2 />}
-                {activePage === "profit" && <ProfitReport2 />}
+            {activePage === "dashboard" && <TableDashboard2 dataWithCalc={dataDataWithCalc} />}
+            {activePage === "history" && <TableHistory2 />}
+            {activePage === "profit" && <ProfitReport2 />}
 
 
         </div>
