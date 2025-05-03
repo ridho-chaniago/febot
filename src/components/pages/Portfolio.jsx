@@ -5,6 +5,7 @@ import ProfitReport from './ProfitReport';
 import { useDispatch, useSelector } from 'react-redux';
 import TableHistory from '../molecules/TableHistory';
 import Button from '../atom/Button';
+import { deposite } from '../../config/config';
 const Portfolio = ({ idrHold }) => {
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
@@ -12,7 +13,7 @@ const Portfolio = ({ idrHold }) => {
     const idr = dataCoin[0].idr
     const totalWd = 0
     // const totalDepo = 3000171+4000796
-    const totalDepo = 7000000+12500000
+    const totalDepo = deposite.depo
     const sisaIdr = totalDepo - totalWd
     const asetCoinInIdr = Number(idr)
     const [tampilkanSaldo, setTampilkanSaldo] = useState(true);

@@ -25,20 +25,21 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
         return jakartaTime.toISOString().split("T")[0]; // hasilnya yyyy-mm-dd
         // return jakartaTime
     };
-    const formatDate = (timeBuyLocal) => {
-        const [dateStr] = timeBuyLocal.split(',');
-        const [day, month, year] = dateStr.split('/');
-        const result = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-        return result
+    function formatDate(timeBuy) {
+        const date = new Date(timeBuy);
+        const offsetDate = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+        const formattedDate = offsetDate.toISOString().slice(0, 10);
+        return formattedDate
     }
 
     console.log("today ", getTodayJakarta())
     const dateHistory = dataHistory.filter(item => item.finish_time).map(item => ({ ...item, finish_time: formatFinish_time(Number(item.finish_time)) }))
     const sortedData = dataWithCalc.sort((a, b) => b.totalIdr - a.totalIdr);
     const profitOneDay = dateHistory.filter(item => item.statusSell === "done" && item.finish_time === getTodayJakarta()).reduce((sum, item) => sum + (Number(item.amountSell) * Number(item.sellPrice)) - (Number(item.buyAmount) * Number(item.buyPrice)), 0);
-    const sellOneDay = dateHistory.filter(item => item.statusSell === "done" && item.finish_time === getTodayJakarta()).length
-    const buyOneDay = dateHistory.filter(item => item.statusBuy === "filled" && formatDate(item.timeBuyLocal) === getTodayJakarta()).length
-    console.log(formatDate(dataHistory[0].timeBuyLocal))
+    const sellOneDay = dateHistory.filter(item => item.statusSell === "done" && item.finish_time == getTodayJakarta()).length
+    const buyOneDay = dataHistory.filter(item => item.statusBuy === "filled" && formatDate(item.timeBuy)==getTodayJakarta()).length
+    // console.log(formatDate(dataHistory[0].timeBuyLocal))
+    console.log(buyOneDay)
 
     return (
         <div className="p-2 flex flex-col justify-center items-center">

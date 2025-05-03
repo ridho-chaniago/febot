@@ -3,6 +3,7 @@ import TableDashboard from '../molecules/TableDashboard';
 import BotTimer from '../atom/botTimer';
 import ProfitReport from './ProfitReport';
 import { useDispatch, useSelector } from 'react-redux';
+import { deposite } from '../../config/config';
 import TableHistory from '../molecules/TableHistory';
 import Button from '../atom/Button';
 import TableHistory2 from '../molecules/TableHistory2';
@@ -15,7 +16,7 @@ const Portfolio2 = ({ idrHold }) => {
     const idr = dataCoin[0].idr
     const totalWd = 0
     // const totalDepo = 3000171+4000796
-    const totalDepo = 7000000 + 12500000
+    const totalDepo = deposite.depo
     const sisaIdr = totalDepo - totalWd
     const asetCoinInIdr = Number(idr)
     const [tampilkanSaldo, setTampilkanSaldo] = useState(true);

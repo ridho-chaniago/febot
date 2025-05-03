@@ -8,6 +8,7 @@ import { setDataProfit } from '../../redux/features/dataProfit';
 import { useMediaQuery } from '@mui/material';
 import { data } from 'autoprefixer';
 import Portfolio2 from './Portofolio2';
+import {api} from '../../config/config.js';
 
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
@@ -64,7 +65,7 @@ const Dashboard = () => {
 
     async function fetchData(item) {
         try {
-            const dataReady = await axios.get('https://121b-54-253-16-78.ngrok-free.app/api/balance', {
+            const dataReady = await axios.get(api.balance, {
                 headers: {
                   'ngrok-skip-browser-warning': 'true'
                 }
@@ -80,7 +81,7 @@ const Dashboard = () => {
             setIdrHold(idrHold)
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
-            const dataHistoryResponse = await axios.get('https://121b-54-253-16-78.ngrok-free.app/api/history', {
+            const dataHistoryResponse = await axios.get(api.history, {
                 headers: {
                   'ngrok-skip-browser-warning': 'true'
                 }
