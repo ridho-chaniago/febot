@@ -6,7 +6,9 @@ import Table2 from '../atom/Table2';
 import BarPositionPrice2 from '../atom/BarPositionPrice2';
 
 function TableDashboard2({ dataBal, idr, dataWithCalc }) {
-
+    const profitByDateArray= useSelector(state => state.dataProfit);
+    const profitOneDay = profitByDateArray.reduce((total, item) => total + item.profit, 0);
+    console.log("profiteOndeDat",profitByDateArray[0].profit)
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
     function formatFinish_time(timestampInSeconds) {
@@ -18,13 +20,15 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
 
 
     const getTodayJakarta = () => {
-        const now = new Date();
-        // Konversi ke zona waktu Asia/Jakarta manual dengan offset +7 jam (dalam ms)
-        const jakartaOffset = 7 * 60 * 60 * 1000;
-        const jakartaTime = new Date(now.getTime() + jakartaOffset);
-        return jakartaTime.toISOString().split("T")[0]; // hasilnya yyyy-mm-dd
-        // return jakartaTime
-    };
+        const date = new Date();
+        return new Intl.DateTimeFormat('id-ID', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          timeZone: 'Asia/Jakarta' // ⬅️ WIB
+        }).format(date).replace(/:/g, '.'); // ⬅️ titik pemisah waktu
+      };
+
     function formatDate(timeBuy) {
         const date = new Date(timeBuy);
         const offsetDate = new Date(date.getTime() + 7 * 60 * 60 * 1000);
@@ -35,12 +39,9 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
     console.log("today ", getTodayJakarta())
     const dateHistory = dataHistory.filter(item => item.finish_time).map(item => ({ ...item, finish_time: formatFinish_time(Number(item.finish_time)) }))
     const sortedData = dataWithCalc.sort((a, b) => b.totalIdr - a.totalIdr);
-    const profitOneDay = dateHistory.filter(item => item.statusSell === "done" && item.finish_time === getTodayJakarta()).reduce((sum, item) => sum + (Number(item.amountSell) * Number(item.sellPrice)) - (Number(item.buyAmount) * Number(item.buyPrice)), 0);
-    const sellOneDay = dateHistory.filter(item => item.statusSell === "done" && item.finish_time == getTodayJakarta()).length
-    const buyOneDay = dataHistory.filter(item => item.statusBuy === "filled" && formatDate(item.timeBuy)==getTodayJakarta()).length
-    // console.log(formatDate(dataHistory[0].timeBuyLocal))
-    console.log(buyOneDay)
-
+    const sellOneDay = dataHistory.filter(item => item.statusSell === "done" && (item.timeSell).split(',')[0] == getTodayJakarta()).length
+    const buyOneDay = dataHistory.filter(item => item.statusBuy === "filled" && (item.timeBuy).split(',')[0]==getTodayJakarta()).length
+        
     return (
         <div className="p-2 flex flex-col justify-center items-center">
             <div className='flex bg-gray-200'>
@@ -48,7 +49,7 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
                 <p className="px-4 py-2 text-center font-medium text-xs">Sell Today<br /> {sellOneDay}</p>
                 <p className="px-4 py-2 font-medium bg-green-400 text-white text-xs text-center">
                     Profit Today<br />
-                    <b>Rp. {(Math.floor(profitOneDay)).toLocaleString('id-ID')}</b>
+                    <b>Rp. {(Math.floor(Number(profitByDateArray[0].profit)*0.97888)).toLocaleString('id-ID')}</b>
                 </p>
             </div>
             <div className="overflow-x-auto w-full">

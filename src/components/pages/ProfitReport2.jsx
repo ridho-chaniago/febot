@@ -1,14 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
 
 function ProfitReport2() {
-    const profitByDateArray= useSelector(state => state.dataProfit);
+    const profitByDateArray = useSelector(state => state.dataProfit);
     const totalProfit = profitByDateArray.reduce((total, item) => total + item.profit, 0);
-console.log(profitByDateArray)
+    console.log(profitByDateArray)
     return (
         <div className="overflow-x-auto">
             <p className="text-xl font-bold text-center mt-4">
-                Total Profit: <span className={totalProfit >= 0 ? "text-green-600" : "text-red-600"}>
-                    {totalProfit.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                Total Profit:  <span className={totalProfit* 0.97888 >= 0 ? "text-green-600" : "text-red-600"}>
+                    {`Rp. ${(totalProfit* 0.97888).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
                 </span>
             </p>
 
@@ -19,14 +19,20 @@ console.log(profitByDateArray)
                         <th className="px-4 py-2">Profit</th>
                         <th className="px-4 py-2">Total Sell</th>
                         {/* <th className="px-4 py-2">Total Buy</th> */}
-                        
+
                     </tr>
                 </thead>
                 <tbody>
                     {profitByDateArray.map((item, index) => (
                         <tr key={index} className="text-center">
                             <td className="px-4 py-2">{item.date}</td>
-                            <td className="px-4 py-2">{item.profit.toLocaleString()}</td>
+                            <td className="px-4 py-2">
+                                { `Rp. ${(Number(item.profit) * 0.97888).toLocaleString('id-ID', {
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                })}`}
+                            </td>
+
                             <td className="px-4 py-2">{item.totalSell}</td>
                             {/* <td className="px-4 py-2">{item.totalSell}</td> */}
                         </tr>

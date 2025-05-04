@@ -148,7 +148,7 @@ const Portfolio2 = ({ idrHold }) => {
                         <span className="text-green-600"> {totalSellLength}</span>
                     </h2>
                     <h2 className="text-xs text-gray-500">Total Profit :
-                        <span className="text-green-600"> Rp. {Number(totalProfit.toFixed(0)).toLocaleString('id-ID')}</span>
+                        <span className="text-green-600"> Rp. {Number((totalProfit* 0.97888).toFixed(0)).toLocaleString('id-ID')}</span>
                     </h2>
                 </button>
                 <div className="flex space-x-2">
