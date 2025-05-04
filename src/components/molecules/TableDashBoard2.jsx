@@ -6,7 +6,7 @@ import Table2 from '../atom/Table2';
 import BarPositionPrice2 from '../atom/BarPositionPrice2';
 
 function TableDashboard2({ dataBal, idr, dataWithCalc }) {
-    const profitByDateArray= useSelector(state => state.dataProfit);
+    const profitByDateArray = useSelector(state => state.dataProfit);
     const profitOneDay = profitByDateArray.reduce((total, item) => total + item.profit, 0);
     // console.log("profiteOndeDat",profitByDateArray[0].profit)
     const dataCoin = useSelector(state => state.dataCoin);
@@ -22,12 +22,12 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
     const getTodayJakarta = () => {
         const date = new Date();
         return new Intl.DateTimeFormat('id-ID', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          timeZone: 'Asia/Jakarta' // ⬅️ WIB
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            timeZone: 'Asia/Jakarta' // ⬅️ WIB
         }).format(date).replace(/:/g, '.'); // ⬅️ titik pemisah waktu
-      };
+    };
 
     function formatDate(timeBuy) {
         const date = new Date(timeBuy);
@@ -40,8 +40,8 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
     const dateHistory = dataHistory.filter(item => item.finish_time).map(item => ({ ...item, finish_time: formatFinish_time(Number(item.finish_time)) }))
     const sortedData = dataWithCalc.sort((a, b) => b.totalIdr - a.totalIdr);
     const sellOneDay = dataHistory.filter(item => item.statusSell === "done" && (item.timeSell).split(',')[0] == getTodayJakarta()).length
-    const buyOneDay = dataHistory.filter(item => item.statusBuy === "filled" && (item.timeBuy).split(',')[0]==getTodayJakarta()).length
-        
+    const buyOneDay = dataHistory.filter(item => item.statusBuy === "filled" && (item.timeBuy).split(',')[0] == getTodayJakarta()).length
+
     return (
         <div className="p-2 flex flex-col justify-center items-center">
             <div className='flex bg-gray-200'>
@@ -49,7 +49,12 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
                 <p className="px-4 py-2 text-center font-medium text-xs">Sell Today<br /> {sellOneDay}</p>
                 <p className="px-4 py-2 font-medium bg-green-400 text-white text-xs text-center">
                     Profit Today<br />
-                    <b>Rp. {(Math.floor(Number(profitByDateArray[0].profit)*0.97888)).toLocaleString('id-ID')}</b>
+                    <b>
+                        {profitByDateArray.length > 0 && profitByDateArray[0].profit
+                            ? `Rp. ${Math.floor(Number(profitByDateArray[0].profit) * 0.97888).toLocaleString('id-ID')}`
+                            : 'Rp. -'}
+                    </b>
+
                 </p>
             </div>
             <div className="overflow-x-auto w-full">
