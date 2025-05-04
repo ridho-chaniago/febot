@@ -8,7 +8,7 @@ import { setDataProfit } from '../../redux/features/dataProfit';
 import { useMediaQuery } from '@mui/material';
 import { data } from 'autoprefixer';
 import Portfolio2 from './Portofolio2';
-import {api} from '../../config/config.js';
+import { api } from '../../config/config.js';
 
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
@@ -20,20 +20,14 @@ const Dashboard = () => {
     const dataHistory = useSelector(state => state.dataHistory);
     const isSmallScreen = useMediaQuery('(max-width:600px)');
     // Format tanggal
-    function ft(unixTime) {
-        const d = new Date(unixTime * 1000);
-        const tanggal = d.getDate();
-        const bulan = d.getMonth() + 1;
-        const tahun = d.getFullYear();
-        return `${tanggal}/${bulan}/${tahun}`;
-    }
+
     const soldTransactions = dataHistory
-        .filter(item => item.finish_time)
+        .filter(item => item.timeSell && item.statusSell === 'done')
         .map(item => ({
             ...item,
-            sellDate: ft(Number(item.finish_time)) // <<< konsisten formatting
+            sellDate: item.timeSell.split(',')[0] // <<< konsisten formatting
         }));
-
+    console.log("data History", dataHistory)
     // Inisialisasi
     const profitByDate = {};
 
@@ -59,48 +53,79 @@ const Dashboard = () => {
         totalSell: data.totalSell || 0,
         totalBuy: data.totalBuy || 0
     }));
-    console.log(profitByDate)
+    // console.log(profitByDate)
     // Dispatch ke redux atau state
     dispatch(setDataProfit(profitByDateArray));
 
     async function fetchData(item) {
         try {
-            const dataReady = await axios.get(api.balance, {
-                headers: {
-                  'ngrok-skip-browser-warning': 'true'
-                }
-              });
-            console.log("dataReady:", dataReady);  // Menampilkan seluruh data yang diterima dari server
-            console.log("dataReady.data:", dataReady.data);  // Memeriksa bagian 'data' dari respons
-            console.log("dataReady.data.data:", dataReady.data.data);  // Memeriksa bagian dalam 'data'
-            console.log("idrHold:", dataReady.data.data?.idrHold);  // Mengakses idrHold dengan pengecekan
-
-            console.log(dataReady.status)
+            const dataReady = await axios.get(api.balance);
             const idrHold = dataReady.data.data.idrHold
-            console.log("data ready", dataReady)
+            // console.log("data ready", dataReady)
             setIdrHold(idrHold)
             dispatch(setDataCoin(dataReady.data.data.ticker));
             setLoading(false);
-            const dataHistoryResponse = await axios.get(api.history, {
-                headers: {
-                  'ngrok-skip-browser-warning': 'true'
+            // DATA HISTORY WIB
+            const toLocalIndoFormat = (value) => {
+                try {
+                    if (!value) return null;
+            
+                    let date;
+            
+                    if (typeof value === 'number') {
+                        // Detik: 10 digit, Milidetik: 13 digit
+                        if (value.toString().length === 10) {
+                            date = new Date(value * 1000); // dari detik → milidetik
+                        } else {
+                            date = new Date(value); // sudah milidetik
+                        }
+                    } else if (!isNaN(value)) {
+                        // Jika string angka
+                        const num = Number(value);
+                        if (value.length === 10) {
+                            date = new Date(num * 1000);
+                        } else {
+                            date = new Date(num);
+                        }
+                    } else {
+                        date = new Date(value); // ISO string
+                    }
+            
+                    if (isNaN(date.getTime())) {
+                        throw new Error(`Invalid date: ${value}`);
+                    }
+            
+                    return new Intl.DateTimeFormat('id-ID', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                        timeZone: 'Asia/Jakarta'
+                    }).format(date).replace(/:/g, '.');
+                } catch (err) {
+                    console.error("❗ Invalid date value:", value);
+                    return null;
                 }
-              });
+            };
+            
+            
+            
+            
+
+            const dataHistoryResponse = await axios.get(api.history);
+            // console.log(dataHistoryResponse.data)
             const dataHistoryy = dataHistoryResponse.data
                 .map(item => {
-                    const timeBuy = item.timeBuy ? new Date(item.timeBuy) : null;
-                    const timeSell = item.timeSell ? new Date(item.timeSell) : null;
-
                     return {
                         ...item,
-                        timeBuyLocal: timeBuy ? timeBuy.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) : "-",
-                        timeSellLocal: timeSell ? timeSell.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) : "-",
-                        timeFilter: timeBuy ? item.timeBuy.split("T")[0] : "-",
+                        timeBuy: item.timeBuy ? toLocalIndoFormat(item.timeBuy) : null,
+                        timeSell: item.finish_time ? toLocalIndoFormat(Number(item.finish_time) * 1000) : item.timeSell ? toLocalIndoFormat(item.timeSell) : null
                     };
                 })
                 .reverse(); // Data terbaru paling atas
-            console.log("ini data ", dataReady.data.data.ticker)
-
             dispatch(setDataHistory(dataHistoryy));
         } catch (error) {
             console.error('Error fetching data:', error.message);
