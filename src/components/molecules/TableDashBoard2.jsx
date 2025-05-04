@@ -8,7 +8,7 @@ import BarPositionPrice2 from '../atom/BarPositionPrice2';
 function TableDashboard2({ dataBal, idr, dataWithCalc }) {
     const profitByDateArray= useSelector(state => state.dataProfit);
     const profitOneDay = profitByDateArray.reduce((total, item) => total + item.profit, 0);
-    console.log("profiteOndeDat",profitByDateArray[0].profit)
+    // console.log("profiteOndeDat",profitByDateArray[0].profit)
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
     function formatFinish_time(timestampInSeconds) {
