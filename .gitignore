@@ -1,5 +1,5 @@
 src/components/atom/botTimer.jsx
 src/config
-/node_modules
+node_modules
 /dist
 vite.config.js
