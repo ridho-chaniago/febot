@@ -28,7 +28,7 @@ const Portfolio2 = ({ idrHold }) => {
     const dataDataWithCalc = dataCoin.map(item => {
         const base = item.pair.split('_')[0];
         const coin = dataHistory.filter(h => h.id === base && h.statusBuy == "pending" && !h.statusSell);
-        const coinBalance = dataHistory.filter(h => h.id === base && h.statusSell !== 'done' && h.statusBuy === 'filled');
+        const coinBalance = dataHistory.filter(h => h.id === base && h.statusSell !== 'done' && h.statusBuy === 'filled' && h.statusSell !== "cancelled");
         const balanceSell = coinBalance.reduce((sum, h) => sum + Number(h.buyAmount), 0);
         const balanceBuy = coin.reduce((sum, h) => sum + Number(h.buyAmount), 0);
 
@@ -79,7 +79,8 @@ const Portfolio2 = ({ idrHold }) => {
     // const estimasiValue = (asetCoinInIdr + frozenSell + frozenBuy + allCoinProfitIdr + sisaCoinAktif)
     const persen = (((estimasiValue - totalDepo) / totalDepo) * 100).toFixed(2)
     const [activePage, setActivePage] = useState("dashboard");
-
+    const minus = dataHistory.filter(item => item.statusSell === "cancelled").reduce((sum, item) => sum + ((Number(item.amountCancel) * Number(item.priceCancel)) - (Number(item.buyAmount) * Number(item.buyPrice))), 0);
+    console.log(minus)
     function handlePageChange(page) {
         setActivePage(page);
     }
@@ -148,7 +149,7 @@ const Portfolio2 = ({ idrHold }) => {
                         <span className="text-green-600"> {totalSellLength}</span>
                     </h2>
                     <h2 className="text-xs text-gray-500">Total Profit :
-                        <span className="text-green-600"> Rp. {Number((totalProfit* 0.97888).toFixed(0)).toLocaleString('id-ID')}</span>
+                        <span className="text-green-600"> Rp. {Number(((totalProfit * 0.97888)+minus).toFixed(0)).toLocaleString('id-ID')}</span>
                     </h2>
                 </button>
                 <div className="flex space-x-2">

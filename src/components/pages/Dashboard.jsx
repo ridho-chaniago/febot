@@ -14,7 +14,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     let i = 1;
-    const [idrHold, setIdrHold] = useState(0);
+    const [idrHold, setIdrHold] = useState(12);
     const dispatch = useDispatch();
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
@@ -27,7 +27,7 @@ const Dashboard = () => {
             ...item,
             sellDate: item.timeSell.split(',')[0] // <<< konsisten formatting
         }));
-    console.log("data History", dataHistory)
+    // console.log("data History", dataHistory)
     // Inisialisasi
     const profitByDate = {};
 
@@ -60,10 +60,11 @@ const Dashboard = () => {
     async function fetchData(item) {
         try {
             const dataReady = await axios.get(api.balance);
-            const idrHold = dataReady.data.data.idrHold
+            const idrHoldd = dataReady.data.idrHold
+            console.log(dataReady)
             // console.log("data ready", dataReady)
-            setIdrHold(idrHold)
-            dispatch(setDataCoin(dataReady.data.data.ticker));
+            setIdrHold(idrHoldd)
+            dispatch(setDataCoin(dataReady.data.ticker));
             setLoading(false);
             // DATA HISTORY WIB
             const toLocalIndoFormat = (value) => {
@@ -116,7 +117,7 @@ const Dashboard = () => {
             
 
             const dataHistoryResponse = await axios.get(api.history);
-            // console.log(dataHistoryResponse.data)
+            console.log(dataHistoryResponse.data)
             const dataHistoryy = dataHistoryResponse.data
                 .map(item => {
                     return {

@@ -5,9 +5,9 @@ function BarPositionPrice2({ pair, last }) {
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
     const base = pair.split('_')[0];
-    const minPrice = dataHistory.find(item => item.id === base && item.statusBuy == 'pending');
+    const minPrice = dataHistory.find(item => item.id === base && item.statusBuy == 'pending' );
     const min = minPrice ? minPrice.buyPrice : 0;
-    const maxPrice = dataHistory.filter(item => item.pair === pair && item.statusSell !== 'done');
+    const maxPrice = dataHistory.filter(item => item.pair === pair && item.statusSell !== 'done' && item.statusSell !== "cancelled");
     // const max = maxPrice.map(item => Number(item.sellPrice)).sort((a, b) => a - b);
     const max = maxPrice
         .map(item => ({

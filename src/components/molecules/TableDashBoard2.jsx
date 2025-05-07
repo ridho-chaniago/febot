@@ -36,12 +36,13 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
         return formattedDate
     }
 
-    console.log("today ", getTodayJakarta())
+    // console.log("today ", getTodayJakarta())
     const dateHistory = dataHistory.filter(item => item.finish_time).map(item => ({ ...item, finish_time: formatFinish_time(Number(item.finish_time)) }))
     const sortedData = dataWithCalc.sort((a, b) => b.totalIdr - a.totalIdr);
     const sellOneDay = dataHistory.filter(item => item.statusSell === "done" && (item.timeSell).split(',')[0] == getTodayJakarta()).length
     const buyOneDay = dataHistory.filter(item => item.statusBuy === "filled" && (item.timeBuy).split(',')[0] == getTodayJakarta()).length
-
+    const cancelOneDay = dataHistory.filter(item => item.statusSell === "cancelled")
+    console.log(cancelOneDay)
     return (
         <div className="p-2 flex flex-col justify-center items-center">
             <div className='flex bg-gray-200'>
@@ -73,7 +74,7 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
                     </thead>
                     <tbody className="bg-white">
                         {sortedData.map((item, index) => (
-                            <React.Fragment key={item.pair}>
+                            <>
 
                                 <Table2
                                     pair={item.pair}
@@ -89,7 +90,7 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
                                     dataHistory={dataHistory}
                                 />
                                 <BarPositionPrice2 last={item.last} pair={item.pair} dataHistory={dataHistory} />
-                            </React.Fragment>
+                            </>
                         ))}
                     </tbody>
                 </table>
