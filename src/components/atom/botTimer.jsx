@@ -48,20 +48,20 @@ export default function BotTimer({totalSellLength, totalProfit, deposite }) {
 
     return (
         <div>
-            <p className={`text-sm text-gray-500`}>
+            <p className={`text-sm text-gray-500 text-center`}>
                 Project ini di bangun dengan modal Rp. {Number(deposite.toFixed(0)).toLocaleString('id-ID')}
             </p>
-            <div className="text-center text-sm text-green-600">
-                <p>⏱ dan sudah beroperasi selama {days} hari {hours} jam</p>
+            <div className="text-center text-xs text-green-600">
+                <p>⏱ dan sudah beroperasi selama {days} hari {hours} jam.</p>
                 <p>Kendaraan yang melewati jalan tol hari ini sebanyak <span className='font-bold'>{sellOneDay}</span> kendaraan, 
                 dengan keuntungan <span className='font-bold'>{profitByDateArray.length > 0 && profitByDateArray[0].profit
                             ? `Rp. ${Math.floor(Number(profitByDateArray[0].profit) * 0.97888).toLocaleString('id-ID')}`
                             : 'Rp. -'}</span></p>
             </div>
-            <div className="text-center text-sm text-green-600">
+            <div className="text-center text-xs text-green-600">
                 <p>💸 Rata-rata keuntungan perhari selama jalan tol beroperasi <span className='font-bold'>{avgDay}</span></p>
             </div>
-            <div className="text-center text-sm text-green-600">
+            <div className="text-center text-xs text-green-600">
                 <p>Estimasi balik modal +- <span className='font-bold'>{Math.floor(timeTakeProfite)}</span> hari lagi</p>
             </div>
 

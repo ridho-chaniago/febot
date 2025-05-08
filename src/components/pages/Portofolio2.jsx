@@ -134,12 +134,8 @@ const Portfolio2 = ({ idrHold }) => {
             <div className="flex flex-col items-center justify-center overflow-x-auto">
                 <div type="button" className=" flex bg-gray-100 mb-2 p-2 rounded-lg border flex-col items-center space-x-2 z-10">
                     <BotTimer totalSellLength={totalSellLength} totalProfit={profitBotTimer} deposite={totalDepo} />
-                    <h2 className="text-xs  text-gray-500">Total Kendaraan yang melewati jalan tol :
-                        <span className="text-green-600"> {totalSellLength} kendaraan</span>
-                    </h2>
-                    <h2 className="text-xs text-gray-500">Total keuntungan selama ini :
-                        <span className="text-green-600"> Rp. {Number(((totalProfit) + minus).toFixed(0)).toLocaleString('id-ID')}</span>
-                    </h2>
+                    <p className="text-xs text-center text-gray-500">Total seluruh Kendaraan yang melewati jalan tol :<span className="text-green-600"> {totalSellLength}</span> kendaraan, dengan keuntungan <span className="text-green-600"> Rp. {Number(((totalProfit) + minus).toFixed(0)).toLocaleString('id-ID')} </span>
+                    </p>
                     {/* <h2 className="text-xs text-gray-500">Idr Free :
                         <span className="text-green-600"> Rp. {tampilkanSaldo ? (dataCoin[0].idr).toLocaleString('id-ID') : "********"}</span>
                     </h2>
