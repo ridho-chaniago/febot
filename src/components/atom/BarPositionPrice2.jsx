@@ -5,7 +5,7 @@ function BarPositionPrice2({ pair, last }) {
     const dataCoin = useSelector(state => state.dataCoin);
     const dataHistory = useSelector(state => state.dataHistory);
     const base = pair.split('_')[0];
-    const minPrice = dataHistory.find(item => item.id === base && item.statusBuy == 'pending' );
+    const minPrice = dataHistory.find(item => item.id === base && item.statusBuy == 'pending');
     const min = minPrice ? minPrice.buyPrice : 0;
     const maxPrice = dataHistory.filter(item => item.pair === pair && item.statusSell !== 'done' && item.statusSell !== "cancelled");
     // const max = maxPrice.map(item => Number(item.sellPrice)).sort((a, b) => a - b);
@@ -16,6 +16,52 @@ function BarPositionPrice2({ pair, last }) {
         }))
         .sort((a, b) => a.sellPrice - b.sellPrice);
     const maxSellPrice = Math.max(...max)
+    const parseDate = (raw) => {
+        if (!raw) return "N/A";
+
+        // Coba paksa ke number
+        const num = Number(raw);
+
+        // Kalau hasilnya NaN, berarti bukan angka atau format aneh
+        if (isNaN(num)) {
+            console.warn("⚠️ Waktu tidak bisa diparse:", raw);
+            return "Invalid Date";
+        }
+
+        // Kalau panjangnya 10 digit, itu detik → kalikan 1000
+        const isUnixSeconds = String(Math.floor(num)).length === 10;
+        const date = new Date(isUnixSeconds ? num * 1000 : num);
+
+        // Cek valid
+        return isNaN(date.getTime())
+            ? "Invalid Date"
+            : date.toLocaleString("id-ID");
+    };
+
+    const handleClick = (item) => {
+        const timeBuy = parseDate(item.timeBuy);
+        const timeSell = parseDate(item.timeSell);
+        const detail = `
+      COIN: ${item.id}
+      ID Buy: ${item.idBuy}
+      Harga Beli: Rp${Number(item.buyPrice).toLocaleString("id-ID")}
+      Waktu Beli: ${item.timeBuy}
+      Jumlah Beli: ${item.buyAmount}
+      Total idr : Rp${Number(item.buyAmount * item.buyPrice).toLocaleString("id-ID")}
+      Status Beli: ${item.statusBuy}
+      
+      ID Sell: ${item.idSell}
+      Harga Jual: Rp${Number(item.sellPrice).toLocaleString("id-ID")}
+      Waktu Jual: ${item.timeSell}
+      Jumlah Jual: ${item.amountSell}
+      Total idr : Rp${Number(item.amountSell * item.sellPrice).toLocaleString("id-ID")}
+      Status Jual: Pending
+      `;
+
+        alert(detail);
+    };
+
+
     return (
         <tr key={pair}>
             <td colSpan={6}>
@@ -43,6 +89,7 @@ function BarPositionPrice2({ pair, last }) {
                     {max.map((item, index) => (
                         <div
                             key={index}
+                            onClick={() => handleClick(item)}
                             className="relative group text-white h-6 min-w-12 bg-red-500 hover:bg-red-700 cursor-pointer rounded-lg flex flex-col justify-center items-center"
                         >
                             <p className="text-[10px]">

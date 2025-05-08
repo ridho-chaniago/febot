@@ -46,13 +46,13 @@ function TableHistory2() {
     };
 
     const filteredHistory = sortedHistory.filter(item => {
-        if (filterOption === "today") {
-            const timeStr = item.timeSell || item.timeBuy;
-            if (!timeStr) return false;
-            const datePart = timeStr.split(',')[0];
-            return datePart === getTodayDateString();
-        }
-        return true; // jika filter "all"
+        if (filterOption !== "today") return true;
+    
+        const timeStr = item.timeSell || item.timeBuy;
+        if (!timeStr) return false;
+    
+        const datePart = timeStr.split(',')[0];
+        return datePart === getTodayDateString();
     });
 
 

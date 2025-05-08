@@ -53,7 +53,6 @@ const Dashboard = () => {
         totalSell: data.totalSell || 0,
         totalBuy: data.totalBuy || 0
     }));
-    console.log(profitByDate)
     // Dispatch ke redux atau state
     dispatch(setDataProfit(profitByDateArray));
 
@@ -61,7 +60,6 @@ const Dashboard = () => {
         try {
             const dataReady = await axios.get(api.balance);
             const idrHoldd = dataReady.data.idrHold
-            console.log(dataReady)
             // console.log("data ready", dataReady)
             setIdrHold(idrHoldd)
             dispatch(setDataCoin(dataReady.data.ticker));
@@ -112,7 +110,6 @@ const Dashboard = () => {
                 }
             };
             const dataHistoryResponse = await axios.get(api.history);
-            console.log(dataHistoryResponse.data)
             const dataHistoryy = dataHistoryResponse.data
                 .map(item => {
                     return {

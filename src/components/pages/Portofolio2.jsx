@@ -10,6 +10,7 @@ import TableHistory2 from '../molecules/TableHistory2';
 import ProfitReport2 from './ProfitReport2';
 import TableDashboard2 from '../molecules/TableDashBoard2';
 import bgTool from '../../assets/img/bgTool.png';
+import Logs from './logs';
 
 console.log(bgTool)
 
@@ -161,6 +162,11 @@ const Portfolio2 = ({ idrHold }) => {
                         isActive={activePage === "profit"}>
                         Profit
                     </Button>
+                    <Button
+                        onClick={() => handlePageChange("live")}
+                        isActive={activePage === "live"}>
+                        Live Bot
+                    </Button>
                 </div>
             </div>
 
@@ -169,6 +175,7 @@ const Portfolio2 = ({ idrHold }) => {
             {activePage === "dashboard" && <TableDashboard2 dataWithCalc={dataDataWithCalc} />}
             {activePage === "history" && <TableHistory2 />}
             {activePage === "profit" && <ProfitReport2 minus={minus} />}
+            {activePage === "live" && <Logs/>}
 
 
         </div>
