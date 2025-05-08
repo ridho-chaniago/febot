@@ -48,13 +48,13 @@ function BarPositionPrice2({ pair, last }) {
                             <p className="text-[10px]">
                                 {`${(min !== maxSellPrice ? ((item.sellPrice - last) / last) * 100 : 0).toFixed(2)}%`}
                             </p>
-                            <div className="absolute top-full z-10 bg-red-600 text-white text-[10px] px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition duration-300 text-left">
-                                {/* <p>ID: {item.idBuy}</p> */}
+                            {/* <div className="absolute top-full z-50 bg-red-600 text-white text-[10px] px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition duration-300 text-left">
+                                <p>ID: {item.idBuy}</p>
                                 <p>Price: Rp.{Number(item.sellPrice).toLocaleString('id-ID')}</p>
                                 <p>Amount Buy: {item.buyAmount}</p>
                                 <p>Amount Sell: {item.amountSell}</p>
                                 <p>Total IDR: Rp.{(Number(item.amountSell) * Number(last)).toLocaleString('id-ID')}</p>
-                            </div>
+                            </div> */}
                         </div>
                     ))}
                 </div>
