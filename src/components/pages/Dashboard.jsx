@@ -53,7 +53,7 @@ const Dashboard = () => {
         totalSell: data.totalSell || 0,
         totalBuy: data.totalBuy || 0
     }));
-    // console.log(profitByDate)
+    console.log(profitByDate)
     // Dispatch ke redux atau state
     dispatch(setDataProfit(profitByDateArray));
 
@@ -70,9 +70,9 @@ const Dashboard = () => {
             const toLocalIndoFormat = (value) => {
                 try {
                     if (!value) return null;
-            
+
                     let date;
-            
+
                     if (typeof value === 'number') {
                         // Detik: 10 digit, Milidetik: 13 digit
                         if (value.toString().length === 10) {
@@ -91,11 +91,11 @@ const Dashboard = () => {
                     } else {
                         date = new Date(value); // ISO string
                     }
-            
+
                     if (isNaN(date.getTime())) {
                         throw new Error(`Invalid date: ${value}`);
                     }
-            
+
                     return new Intl.DateTimeFormat('id-ID', {
                         day: '2-digit',
                         month: '2-digit',
@@ -111,11 +111,6 @@ const Dashboard = () => {
                     return null;
                 }
             };
-            
-            
-            
-            
-
             const dataHistoryResponse = await axios.get(api.history);
             console.log(dataHistoryResponse.data)
             const dataHistoryy = dataHistoryResponse.data

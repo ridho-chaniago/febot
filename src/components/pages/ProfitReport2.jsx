@@ -1,14 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
 
-function ProfitReport2() {
+function ProfitReport2({minus}) {
     const profitByDateArray = useSelector(state => state.dataProfit);
-    const totalProfit = profitByDateArray.reduce((total, item) => total + item.profit, 0);
-    console.log(profitByDateArray)
+    const totalProfit = profitByDateArray.reduce((sum, item) => sum + (Number(item.profit)* 0.97888), 0);
     return (
         <div className="overflow-x-auto">
+            
             <p className="text-xl font-bold text-center mt-4">
-                Total Profit:  <span className={totalProfit* 0.97888 >= 0 ? "text-green-600" : "text-red-600"}>
-                    {`Rp. ${(totalProfit* 0.97888).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                Total Profit:  <span className={totalProfit>= 0 ? "text-green-600" : "text-red-600"}>
+                    {`Rp. ${(totalProfit+minus).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
                 </span>
             </p>
 
