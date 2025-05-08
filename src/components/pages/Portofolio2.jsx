@@ -11,8 +11,8 @@ import ProfitReport2 from './ProfitReport2';
 import TableDashboard2 from '../molecules/TableDashBoard2';
 import bgTool from '../../assets/img/bgTool.png';
 import Logs from './logs';
+import VisitedCounter from '../atom/Visited';
 
-console.log(bgTool)
 
 const Portfolio2 = ({ idrHold }) => {
     const dataCoin = useSelector(state => state.dataCoin);
@@ -87,7 +87,7 @@ const Portfolio2 = ({ idrHold }) => {
 
     return (
         <div id='top' className="container mx-auto relative">
-
+            <VisitedCounter />
             <img src={bgTool} alt="Tol Icon" className="opacity-75 w-full absolute" />
 
             {/* <header className="text-center mb-8">
@@ -175,7 +175,7 @@ const Portfolio2 = ({ idrHold }) => {
             {activePage === "dashboard" && <TableDashboard2 dataWithCalc={dataDataWithCalc} />}
             {activePage === "history" && <TableHistory2 />}
             {activePage === "profit" && <ProfitReport2 minus={minus} />}
-            {activePage === "live" && <Logs/>}
+            {activePage === "live" && <Logs />}
 
 
         </div>

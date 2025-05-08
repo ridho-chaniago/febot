@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { waktuMulai } from '../../config/config';
 import { useSelector } from 'react-redux';
 
-export default function BotTimer({totalSellLength, totalProfit, deposite }) {
+export default function BotTimer({ totalSellLength, totalProfit, deposite }) {
     const [elapsedTime, setElapsedTime] = useState(0);
 
     // Ambil waktu pukul 00:01 WIB hari ini
@@ -36,10 +36,17 @@ export default function BotTimer({totalSellLength, totalProfit, deposite }) {
     const hours = Math.floor(elapsedTime / (1000 * 60 * 60)) % 24;
     const minutes = Math.floor(elapsedTime / (1000 * 60)) % 60;
     const seconds = Math.floor(elapsedTime / 1000) % 60;
-    const avgDayRupiah = ((Number(totalProfit) * 1000) / Number(days)).toFixed(0)
+    const cleanProfit = String(totalProfit).replace(/\./g, ""); // hilangkan semua titik
+    const avgDayRupiah = (Number(days) > 0)
+        ? (Number(cleanProfit) / Number(days))
+        : 0;
+
     const depositeRupiah = Number(deposite)
-    const timeTakeProfite = (depositeRupiah - (Number(totalProfit) * 1000)) / avgDayRupiah
-    console.log(depositeRupiah - Number(totalProfit))
+    const timeTakeProfite = (depositeRupiah - (Number(cleanProfit))) / avgDayRupiah
+    if (isNaN(cleanProfit) || isNaN(days) || days === 0) {
+        console.warn("Invalid input:", cleanProfit, days);
+    }
+
     const avgDay = new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
@@ -53,10 +60,10 @@ export default function BotTimer({totalSellLength, totalProfit, deposite }) {
             </p>
             <div className="text-center text-xs text-green-600">
                 <p>⏱ dan sudah beroperasi selama {days} hari {hours} jam.</p>
-                <p>Kendaraan yang melewati jalan tol hari ini sebanyak <span className='font-bold'>{sellOneDay}</span> kendaraan, 
-                dengan keuntungan <span className='font-bold'>{profitByDateArray.length > 0 && profitByDateArray[0].profit
-                            ? `Rp. ${Math.floor(Number(profitByDateArray[0].profit) * 0.97888).toLocaleString('id-ID')}`
-                            : 'Rp. -'}</span></p>
+                <p>Kendaraan yang melewati jalan tol hari ini sebanyak <span className='font-bold'>{sellOneDay}</span> kendaraan,
+                    dengan keuntungan <span className='font-bold'>{profitByDateArray.length > 0 && profitByDateArray[0].profit
+                        ? `Rp. ${Math.floor(Number(profitByDateArray[0].profit) * 0.97888).toLocaleString('id-ID')}`
+                        : 'Rp. -'}</span></p>
             </div>
             <div className="text-center text-xs text-green-600">
                 <p>💸 Rata-rata keuntungan perhari selama jalan tol beroperasi <span className='font-bold'>{avgDay}</span></p>

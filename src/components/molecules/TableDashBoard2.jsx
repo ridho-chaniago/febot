@@ -42,7 +42,6 @@ function TableDashboard2({ dataBal, idr, dataWithCalc }) {
     const sellOneDay = dataHistory.filter(item => item.statusSell === "done" && (item.timeSell).split(',')[0] == getTodayJakarta()).length
     const buyOneDay = dataHistory.filter(item => item.statusBuy === "filled" && (item.timeBuy).split(',')[0] == getTodayJakarta()).length
     const cancelOneDay = dataHistory.filter(item => item.statusSell === "cancelled")
-    console.log(cancelOneDay)
     return (
         <div className="p-2 flex flex-col justify-center items-center">
             <div className='flex bg-gray-200'>
