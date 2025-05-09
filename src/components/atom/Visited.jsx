@@ -31,7 +31,7 @@ function VisitedCounter() {
     fetchData();
   }, []);
 
-  return <p className="text-white text-sm absolute top-0 left-3 z-10">Visited: {count}</p>;
+  return <p className="text-white text-sm absolute font-bold top-0 left-3 z-10">Visited: {count}</p>;
 }
 
 export default VisitedCounter;
