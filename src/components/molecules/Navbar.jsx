@@ -17,21 +17,29 @@ const Navbar = () => {
         </div>
 
         {/* Links */}
-        <div className={`lg:flex space-x-6 ${isMenuOpen ? 'block' : 'hidden'} lg:block`}>
+        {/* <div className={`lg:flex space-x-6 ${isMenuOpen ? 'block' : 'hidden'} lg:block`}>
           <ul className="flex space-x-6 text-white">
-            <li><button className='bg-white px-4 py-2 rounded-lg hover:bg-gray-300'>
-              <a href="https://ridhochaniago.web.app" target='_blank' className='font-bold  text-blue-600 '>A little bit about me</a>
-              </button>
-              </li>
+            <li> */}
+        <button className="bg-gradient-to-b from-blue-200 to-blue-400 px-1 py-1 rounded-lg shadow-[inset_0_-2px_0_0_rgba(0,0,0,0.2),0_4px_6px_rgba(0,0,0,0.3)] transform hover:translate-y-[2px] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_2px_rgba(0,0,0,0.2)] transition">
+          <a
+            href="https://ridhochaniago.web.app"
+            target="_blank"
+            className="font-bold text-blue-700 text-xl"
+          >
+            🧑‍💻
+          </a>
+        </button>
+
+        {/* </li>
           </ul>
-        </div>
+        </div> */}
 
         {/* Hamburger Icon for Mobile */}
-        <div className="lg:hidden">
+        {/* <div className="lg:hidden">
           <button onClick={toggleMenu} className="text-white text-2xl">
             {isMenuOpen ? 'X' : '☰'}
           </button>
-        </div>
+        </div> */}
       </div>
     </nav>
   );
